@@ -5,6 +5,7 @@ interface IUser extends Document {
     password: string;
     role: "admin" | "client" | "coach";
     sub_type:'normal'|'premium';
+    isPasswordCorrect:(candidatePassword: string,userPassword:string) => Promise<boolean>;
 }
 
 export  {IUser};
