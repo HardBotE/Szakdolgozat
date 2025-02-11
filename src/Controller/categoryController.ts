@@ -1,0 +1,13 @@
+
+import categoryModel from "../Model/categoryModel";
+import {createOne, findAll, findOneById, updateOneById} from "./FactoryController";
+
+const createOneCategory= createOne(categoryModel);
+
+const findOneCategory= findOneById(categoryModel);
+
+const findAllCategory= findAll(categoryModel);
+
+const updateCategory= updateOneById(categoryModel);
+
+const deleteOneCategory= findOneById(categoryModel);
