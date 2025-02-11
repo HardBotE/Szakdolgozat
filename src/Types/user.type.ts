@@ -4,6 +4,7 @@ interface IUser extends Document {
     email: string;
     password: string;
     role: "admin" | "client" | "coach";
+    sub_type:'normal'|'premium';
 }
 
 export  {IUser};

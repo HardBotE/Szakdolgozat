@@ -24,7 +24,14 @@ const schema=new mongoose.Schema<IUser>
         type:String,
         enum:['admin','client','coach'],
         required:true,
-    }}
+    },
+    sub_type:{
+        type:String,
+        required:true,
+        enum:['normal','premium'],
+        default:'normal',
+    }
+    }
 );
 
 /*

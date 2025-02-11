@@ -5,7 +5,7 @@ import {ISession} from "../Types/session.type";
 const schema=new mongoose.Schema<ISession>({
     client_id:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"Client",
+        ref:"User",
         required:true
     },
     coach_id:{

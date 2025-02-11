@@ -5,7 +5,7 @@ import {IMessage} from "../Types/message.type";
 const schema=new mongoose.Schema<IMessage>({
     client_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Client",
+        ref: "User",
         required: true,
     },
     coach_id:{
