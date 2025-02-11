@@ -1,13 +1,16 @@
 import mongoose, {Model} from "mongoose";
+import {IMessage} from "../Types/message.type";
 
 
 const schema=new mongoose.Schema<IMessage>({
     client_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Client",
         required: true,
     },
     coach_id:{
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Coach",
         required: true,
     },
     message:{
@@ -19,3 +22,5 @@ const schema=new mongoose.Schema<IMessage>({
 });
 
 const messageModel:Model<IMessage>=mongoose.model("Message",schema);
+
+export default messageModel;

@@ -1,9 +1,11 @@
 import mongoose, {Model} from "mongoose";
+import {IClient} from "../Types/client.type";
 
 
 const schema= new mongoose.Schema<IClient>({
     user_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         required: true,
     },
     sub_type:{

@@ -1,13 +1,16 @@
 import mongoose from "mongoose";
 import {Model} from "mongoose";
+import {ISession} from "../Types/session.type";
 
 const schema=new mongoose.Schema<ISession>({
     client_id:{
-        type:String,
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Client",
         required:true
     },
     coach_id:{
-        type:String,
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Coach",
         required:true
     },
     date:{

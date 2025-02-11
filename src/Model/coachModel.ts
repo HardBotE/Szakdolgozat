@@ -4,11 +4,13 @@ import {ICoach} from "../Types/coach.type";
 const schema = new mongoose.Schema<ICoach>(
     {
         user_id: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
             required: true
         },
         category_id: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Category",
             required: true
         },
         description: {
