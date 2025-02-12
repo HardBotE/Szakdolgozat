@@ -12,3 +12,4 @@ const findAllSession=findAll(sessionModel);
 const deleteSession= deleteOneById(sessionModel);
 
 
+export {createSession,updateSession,findOneSession,deleteSession,findAllSession};

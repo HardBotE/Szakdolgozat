@@ -11,3 +11,5 @@ const findAllCategory= findAll(categoryModel);
 const updateCategory= updateOneById(categoryModel);
 
 const deleteOneCategory= findOneById(categoryModel);
+
+export {createOneCategory,findAllCategory,findOneCategory,updateCategory,deleteOneCategory};

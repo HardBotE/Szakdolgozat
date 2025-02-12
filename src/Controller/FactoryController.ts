@@ -1,10 +1,10 @@
 import {Model} from "mongoose";
-import {NextFunction,Request,Response} from "express";
+import {NextFunction, Request, RequestHandler, Response} from "express";
 import catchAsync from "../Utils/CatchAsyncError";
 
 
-const findAll=<T extends Document>(Model:Model<T>)=>
-    catchAsync(async (req:Request,res:Response,next:NextFunction)=>{
+const findAll=<T extends Document>(Model:Model<T>):RequestHandler=>
+    catchAsync(async (req,res,next)=>{
 
     const data=await Model.find();
 

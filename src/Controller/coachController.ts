@@ -10,3 +10,5 @@ const createCoach=createOne(coachModel);
 const updateCoach=updateOneById(coachModel);
 
 const deleteCoach=deleteOneById(coachModel);
+
+export {findAllCoaches,findCoach,createCoach,updateCoach,deleteCoach};
