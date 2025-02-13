@@ -1,7 +1,6 @@
 import express from 'express';
-import categoryRouter from "./Router/categoryRouter";
-import sessionRouter from "./Router/sessionRouter";
-import userRouter from "./Router/userRouter";
+import {errorHandler} from "./Utils/AppError";
+import router from "./Router/routing";
 
 const app = express();
 
@@ -18,11 +17,12 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
     next();
 });
 
-app.use('/',categoryRouter);
-app.use('/coaches',sessionRouter);
-app.use('/users',userRouter);
+
+//all conenction
+app.use(router);
 
 
-
+//error handler
+app.use(errorHandler);
 
 export default app;

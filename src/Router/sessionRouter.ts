@@ -7,16 +7,18 @@ import {
     updateSession
 } from "../Controller/sessionController";
 
-const router=express.Router();
 
-router.route('/:coach_id/session')
+const router=express.Router({mergeParams:true});
+
+router.route('/')
     .get(findAllSession)
     .post(createSession);
 
-router.route('/:coach_id/session/:session_id')
+router.route('/:session_id')
     .get(findOneSession)
     .patch(updateSession)
     .delete(deleteSession);
+
 
 export default router;
 

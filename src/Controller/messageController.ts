@@ -10,3 +10,5 @@ const findOneMessage=findOneById(messageModel);
 const updateMessage=updateOneById(messageModel);
 
 const deleteMessage=deleteOneById(messageModel);
+
+export {createMessage,findAllMessages,findOneMessage,updateMessage,deleteMessage};

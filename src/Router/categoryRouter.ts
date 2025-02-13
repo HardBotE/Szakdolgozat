@@ -6,7 +6,8 @@ import {
     findOneCategory,
     updateCategory
 } from "../Controller/categoryController";
-import {createCoach, deleteCoach, findAllCoaches, findCoach, updateCoach} from "../Controller/coachController";
+import {createCoach, findAllCoaches} from "../Controller/coachController";
+
 
 
 const router=express.Router();
@@ -20,14 +21,11 @@ router.route('/:category_id')
     .put(updateCategory)
     .delete(deleteOneCategory);
 
-router.route('/:category_id/coaches')
+router.route("/:category_id/coaches")
     .get(findAllCoaches)
     .post(createCoach);
 
-router.route('/:category_id/coaches/:coach_id')
-    .get(findCoach)
-    .patch(updateCoach)
-    .delete(deleteCoach);
+
 
 
 
