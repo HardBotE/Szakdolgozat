@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
+import mongoose, {ObjectId} from "mongoose";
 
 interface IMessage extends Document {
-    client_id: mongoose.Schema.Types.ObjectId;
-    coach_id: mongoose.Schema.Types.ObjectId;
+    client_ids: ObjectId[];
+    sender_id: ObjectId;
     message: string;
     timestamp: string;
 }

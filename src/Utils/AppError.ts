@@ -21,4 +21,7 @@ const errorHandler=(err:AppError,req:Request,res:Response,next:NextFunction) => 
     });
 
 }
+
+
+
 export {AppError,errorHandler}

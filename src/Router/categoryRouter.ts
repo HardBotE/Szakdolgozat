@@ -7,6 +7,7 @@ import {
     updateCategory
 } from "../Controller/categoryController";
 import {createCoach, findAllCoaches} from "../Controller/coachController";
+import {getUserFromJWT, grantPermission, verifyOwnership} from "../Controller/authController";
 
 
 
@@ -14,16 +15,16 @@ const router=express.Router();
 
 router.route('/')
     .get(findAllCategory)
-    .post(createOneCategory);
+    .post(getUserFromJWT,grantPermission('admin'),createOneCategory);
 
-router.route('/:category_id')
+router.route('/:id')
     .get(findOneCategory)
-    .put(updateCategory)
-    .delete(deleteOneCategory);
+    .patch(getUserFromJWT,grantPermission('admin'),updateCategory)
+    .delete(getUserFromJWT,grantPermission('admin'),deleteOneCategory);
 
-router.route("/:category_id/coaches")
+router.route("/:id/coaches")
     .get(findAllCoaches)
-    .post(createCoach);
+    .post(getUserFromJWT,grantPermission('client'),verifyOwnership('user_id'),createCoach);
 
 
 

@@ -7,7 +7,7 @@ const findCoach=findOneById(coachModel);
 
 const createCoach=createOne(coachModel);
 
-const updateCoach=updateOneById(coachModel);
+const updateCoach=updateOneById(coachModel,['id','_id','user_id']);
 
 const deleteCoach=deleteOneById(coachModel);
 

@@ -1,7 +1,13 @@
 import catchAsync from "../Utils/CatchAsyncError";
 import UserModel from "../Model/userModel";
-import {NextFunction,Request,Response} from "express";
-import {jwt} from "jsonwebtoken"
+import {NextFunction, Request, RequestHandler, Response} from "express";
+import jwt from 'jsonwebtoken';
+
+import {AppError} from "../Utils/AppError";
+import mongoose from "mongoose";
+
+
+
 
 interface SignUpBody {
     name: string;
@@ -36,16 +42,20 @@ const signUpUser = catchAsync(async (req:Request, res:Response,next:NextFunction
 
 });
 
-const signToken=(id)=>{
-    return jwt.sign({id}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRES});
+const signToken=(id:string)=>{
+
+    if (!process.env.JWT_SECRET) {
+        throw new Error("JWT_SECRET is not defined in environment variables");
+    }
+    return jwt.sign({id}, process.env.JWT_SECRET as string,<jwt.SignOptions>{expiresIn: process.env.JWT_EXPIRES ||"1h"});
 }
 
-const createJWT=(user,statusCode:number,res)=>{
+const createJWT=(user,statusCode:number,res:Response)=>{
 
     const token=signToken(user._id);
 
     const cookieSettings={
-        expires:new Date(Date.now() + process.env.JWT_EXPIRES+24*60*60*1000),
+        expires:new Date(Date.now() + (Number(process.env.JWT_EXPIRES_COOKIE) ||1) +24*60*60*1000),
         httpOnly:true,
     };
 
@@ -77,3 +87,79 @@ const loginUser=catchAsync(async (req:Request,res:Response,next:NextFunction) =>
 
     createJWT(user,200,res);
 });
+
+const grantPermission=(...roles:string[])=>( req:Request,res:Response,next:NextFunction) => {
+    if(!req.user)
+    {
+        next(new Error("You are not logged in"));
+    }
+
+    if(!roles.includes(req.user.role)){
+        return next(new AppError('Unauthorized',403,'Users role is not in the permitted roles!'))
+    }
+    console.log(roles);
+    next();
+}
+
+const getUserFromJWT: RequestHandler = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    console.log("Function called");
+
+    try {
+        const token = req.cookies.jwt;
+        if (!token) {
+            console.log("No token found");
+            return res.status(401).json({ message: "No token provided" });
+        }
+
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET as string
+        ) as jwt.JwtPayload;
+
+        console.log("Decoded token:", decoded);
+
+        if (!decoded.id) {
+            console.log("Invalid token structure");
+            return res.status(400).json({ message: "Invalid token structure" });
+        }
+
+        const userId=new mongoose.Types.ObjectId(decoded.id);
+
+        const user=await UserModel.findById(userId).select('-password');
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        req.user=user;
+        req.user._id = user._id;
+        res.locals.user = user;
+        console.log('User found: '+req.user);
+        return next();
+    } catch (err) {
+        console.log("Error in getUserFromJWT:", err);
+        return next(err);
+    }
+});
+
+const verifyOwnership = (field: "user_id" | "coach_id" | "sender_id" | "id") => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        if(req.user.role==='admin')
+            next();
+
+        //ha modositani szeretnenk a user_id/t vagy a coachid-t bodyban vagy req.paramsban
+        if (req.body[field] || req.params[field]) {
+            const paramId=req.params[field]? new mongoose.Types.ObjectId(req.params[field]) : null;
+            const bodyId=req.body[field]? new mongoose.Types.ObjectId(req.body[field]) : null;
+
+            if (req.user._id !== bodyId || req.user._id !== paramId) {
+                return next(new AppError("You can only modify your own messages, reservations!", 403, "Unauthorized action"));
+            }
+        }
+
+        next();
+    };
+};
+
+
+export {loginUser,signUpUser,grantPermission,getUserFromJWT,verifyOwnership};

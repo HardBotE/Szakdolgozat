@@ -13,6 +13,24 @@ const schema = new mongoose.Schema<ICoach>(
             ref: "Category",
             required: true
         },
+        availability:{
+            day:{
+                type: String,
+                enum:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
+            },
+            startTime:{
+                type: Date,
+                required:true,
+            },
+            endTime:{
+                type: Date,
+                required:true,
+            },
+            reserved:{
+                type:Boolean,
+                default:false
+            }
+        },
         description: {
             type: String,
             required: true

@@ -3,14 +3,15 @@ import {IMessage} from "../Types/message.type";
 
 
 const schema=new mongoose.Schema<IMessage>({
-    client_id: {
+    client_ids: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
-    },
-    coach_id:{
+        min:2
+    }],
+    sender_id:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Coach",
+        ref: "User",
         required: true,
     },
     message:{

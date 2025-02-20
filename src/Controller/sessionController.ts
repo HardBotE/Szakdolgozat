@@ -3,7 +3,7 @@ import {createOne, deleteOneById, findAll, findOneById, updateOneById} from "./F
 
 const createSession = createOne(sessionModel);
 
-const updateSession=updateOneById(sessionModel);
+const updateSession=updateOneById(sessionModel,['id','_id','user_id','coach_id']);
 
 const findOneSession=findOneById(sessionModel);
 

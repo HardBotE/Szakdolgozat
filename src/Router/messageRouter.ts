@@ -6,16 +6,17 @@ import {
     findOneMessage,
     updateMessage
 } from "../Controller/messageController";
+import {getUserFromJWT, verifyOwnership} from "../Controller/authController";
 
 const messageRouter=express.Router({mergeParams:true});
 
 messageRouter.route('/')
-    .get(findAllMessages)
-    .post(createMessage);
+    .get(getUserFromJWT,findAllMessages)
+    .post(getUserFromJWT,createMessage);
 
 messageRouter.route('/:message_id')
-    .get(findOneMessage)
-    .patch(updateMessage)
-    .delete(deleteMessage);
+    .get(getUserFromJWT,findOneMessage)
+    .patch(getUserFromJWT,verifyOwnership("sender_id"),updateMessage)
+    .delete(getUserFromJWT,verifyOwnership("sender_id"),deleteMessage);
 
 export default messageRouter;

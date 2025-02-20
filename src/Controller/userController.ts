@@ -1,5 +1,5 @@
 import userModel from "../Model/userModel";
-import {createOne, deleteOneById, findAll, findOneById, updateOneById} from "./FactoryController";
+import { deleteOneById, findAll, findOneById, updateOneById} from "./FactoryController";
 
 
 
@@ -7,7 +7,7 @@ const findAllUsers=findAll(userModel);
 
 const findUser=findOneById(userModel);
 
-const updateUser=updateOneById(userModel);
+const updateUser=updateOneById(userModel,['role','password','sub_type','_id']);
 
 const deleteUser=deleteOneById(userModel);
 

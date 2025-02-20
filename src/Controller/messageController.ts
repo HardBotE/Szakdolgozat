@@ -7,7 +7,7 @@ const findAllMessages=findAll(messageModel);
 
 const findOneMessage=findOneById(messageModel);
 
-const updateMessage=updateOneById(messageModel);
+const updateMessage=updateOneById(messageModel,['id','_id','sender_id','timestamp']);
 
 const deleteMessage=deleteOneById(messageModel);
 
