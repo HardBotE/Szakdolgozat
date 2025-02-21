@@ -151,10 +151,15 @@ const verifyOwnership = (field: "user_id" | "coach_id" | "sender_id" | "id") => 
         if (req.body[field] || req.params[field]) {
             const paramId=req.params[field]? new mongoose.Types.ObjectId(req.params[field]) : null;
             const bodyId=req.body[field]? new mongoose.Types.ObjectId(req.body[field]) : null;
+            const userId=new mongoose.Types.ObjectId(req.user._id);
 
-            if (req.user._id !== bodyId || req.user._id !== paramId) {
+            if (bodyId && !bodyId.equals(userId)) {
                 return next(new AppError("You can only modify your own messages, reservations!", 403, "Unauthorized action"));
             }
+            if (paramId && !paramId.equals(userId)) {
+                return next(new AppError("You can only modify your own messages, reservations!", 403, "Unauthorized action"));
+            }
+
         }
 
         next();

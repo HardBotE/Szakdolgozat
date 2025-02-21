@@ -14,12 +14,13 @@ const schema=new mongoose.Schema<ISession>({
         required:true
     },
     date:{
-        type:String,
+        type:Date,
         required:true
     },
     status:{
         type:String,
         required:true,
+        enum:["pending","paid","unpaid","canceled"],
         default:'pending'
     }
 

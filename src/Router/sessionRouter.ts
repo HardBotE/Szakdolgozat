@@ -13,12 +13,12 @@ const router=express.Router({mergeParams:true});
 
 router.route('/')
     .get(findAllSession)
-    .post(getUserFromJWT,grantPermission('client'),createSession);
+    .post(getUserFromJWT,grantPermission('client','coach'),createSession);
 
-router.route('/:session_id')
+router.route('/:id')
     .get(getUserFromJWT,verifyOwnership('user_id'),findOneSession)
     .patch(getUserFromJWT,grantPermission('coach'),verifyOwnership("coach_id"),updateSession)
-    .delete(getUserFromJWT,grantPermission('coach'),verifyOwnership("coach_id"),deleteSession);
+    .delete(getUserFromJWT,grantPermission('admin'),verifyOwnership("coach_id"),deleteSession);
 
 
 export default router;

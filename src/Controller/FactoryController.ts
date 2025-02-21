@@ -23,7 +23,7 @@ const findAll=<T extends Document>(Model:Model<T>):RequestHandler=>
 
 const findOneById=<T extends Document>(Model:Model<T>)=>
     catchAsync(async (req:Request,res:Response,next:NextFunction)=>{
-
+        console.log(req.params);
         const data=await Model.findById(req.params.id);
         if(!data)
             res.status(404).json({
@@ -67,8 +67,9 @@ const updateOneById=<T extends Document>(Model:Model<T>,restrictions?:string[])=
 const deleteOneById=<T extends Document>(Model:Model<T>)=>
     catchAsync(async (req:Request,res:Response,next:NextFunction)=>{
 
-        const data=await Model.findByIdAndDelete(req.params.id);
+        const data=await Model.findByIdAndDelete(req.params.id) ;
 
+        console.log(data);
         res.status(200).json({
             data:null,
             message:'Successfully deleted data'

@@ -5,10 +5,11 @@ import {getUserFromJWT, grantPermission, verifyOwnership} from "../Controller/au
 
 const router=express.Router();
 
-router.route("/:coach_id")
+router.route("/:id")
     .get(findCoach)
     .patch(getUserFromJWT,grantPermission('admin','coach'),verifyOwnership('user_id'),updateCoach)
-    .delete(getUserFromJWT,grantPermission('admin','coach'),verifyOwnership('user_id'),deleteCoach);
+    .delete(getUserFromJWT,grantPermission('admin','coach'),verifyOwnership('id'),deleteCoach);
 
-router.use('/:coach_id/sessions',sessionRouter);
+router.use('/:id/sessions',sessionRouter);
 
+export default router;
