@@ -4,14 +4,21 @@ interface ICoach extends Document {
     user_id: ObjectId;
     category_id: ObjectId;
     description: string;
-    availability?:{
+    availability?:[{
         day:string;
         startTime:Date;
         endTime:Date;
         reserved:Boolean;
-    };
+    }];
     rating: number;
     price: number;
 }
 
-export {ICoach};
+interface IAvailability {
+    day:string;
+    startTime:Date;
+    endTime:Date;
+    reserved:Boolean;
+}
+
+export {ICoach,IAvailability};

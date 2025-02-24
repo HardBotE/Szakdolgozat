@@ -14,7 +14,21 @@ const schema=new mongoose.Schema<ISession>({
         required:true
     },
     date:{
-        type:Date,
+        type:{
+            day:{
+                type:String,
+                enum:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
+                required:true,
+            },
+            startTime:{
+                type:Date,
+                required:true,
+            },
+            endTime:{
+              type:Date,
+              required:true,
+            }
+        },
         required:true
     },
     status:{

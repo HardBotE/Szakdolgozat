@@ -5,16 +5,9 @@ import jwt from 'jsonwebtoken';
 
 import {AppError} from "../Utils/AppError";
 import mongoose from "mongoose";
-
-
-
-
-interface SignUpBody {
-    name: string;
-    email: string;
-    password: string;
-    passwordConfirm: string;
-}
+import sendEmail from "../Email/mailer";
+import {Email, SignUpBody} from "../Types/user.type";
+import crypto from "crypto";
 
 const signUpUser = catchAsync(async (req:Request, res:Response,next:NextFunction) => {
 
@@ -32,6 +25,14 @@ const signUpUser = catchAsync(async (req:Request, res:Response,next:NextFunction
     });
 
     //majd ide jon az email
+    const autoEmail:Email={
+        email:"admin@io",
+        name:"Automatic-email"
+    };
+    await (sendEmail(autoEmail, <Email>{
+        email: newUser.email,
+        name: newUser.name
+    }, 'Register', 'Congratulations you`re now successfully registered!'));
 
     res.status(200).json({
         status: "success",
@@ -80,7 +81,8 @@ const loginUser=catchAsync(async (req:Request,res:Response,next:NextFunction) =>
     }
 
     const user=await UserModel.findOne({email}).select("+password");
-
+    console.log(password);
+    console.log(user.password);
     if(!user ||! await user.isPasswordCorrect(password,user.password)){
         return next(new Error("Passwords don't match"));
     }
@@ -166,5 +168,90 @@ const verifyOwnership = (field: "user_id" | "coach_id" | "sender_id" | "id") => 
     };
 };
 
+const passwordReset=catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-export {loginUser,signUpUser,grantPermission,getUserFromJWT,verifyOwnership};
+    const user=await UserModel.findOne({_id:req.user._id}).select("+password");
+
+    if (!user) {
+        return next(new AppError("User not found!", 404, "Please try again or contact support"));
+    }
+
+    if(!await req.user.isPasswordCorrect(req.body.password, user.password)) {
+        return next(new AppError('Password is not correct!',403,'Enter the correct password'));
+    }
+
+    if(req.body.new_password !== req.body.passwordConfirm) {
+        return next(new AppError('Passwords don\'t match!',400,'Enter identical passwords for new_password and passwordConfirm'))
+    }
+
+    const hashedPassword:string= await user.hashAfterNewPassword(req.body.new_password);
+
+    if(!hashedPassword){
+        return next(new AppError('Error ocurred while hasing the password!',500,'Try again later!'));
+    }
+
+    user.password=hashedPassword;
+    await user.save();
+
+    res.status(200).json({
+        message:'Successfully changed password!'
+    });
+    
+})
+
+const passwordResetWithToken = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { token, newPassword,passwordConfirm } = req.body;
+
+    if (!token || !newPassword) {
+        return next(new AppError('Token and new password are required', 400, 'Please provide both.'));
+    }
+
+    const user = await UserModel.findOne({
+        "password_resetToken.token": crypto.createHash('sha256').update(token).digest('hex'),
+        "password_resetToken.availableUntil": { $gt: Date.now()}});
+
+    if (!user) {
+        return next(new AppError('Invalid or expired token', 400, 'Please request a new reset link.'));
+    }
+
+    if(newPassword !== passwordConfirm) {
+        return next(new AppError("Passwords don\'t match",404,'Please provide identical passwords for new_password and passwordConfirm'));
+    }
+
+    user.password = await user.hashAfterNewPassword(newPassword);
+
+    await user.updateOne({password:user.password});
+
+    res.status(200).json({
+        status: 'success',
+        message: 'Password has been successfully reset. You can now log in with your new password.'
+    });
+});
+
+
+const generateResetToken=catchAsync(async (req:Request,res:Response,next:NextFunction)=>{
+    console.log('Generate reset token');
+    const user=await UserModel.findOne(req.user._id);
+
+    if(!user) {
+        return next(new AppError('No user found',403,'Please try again or contact support'));
+    }
+
+    const resetToken=await user.generateResetTokens();
+
+    await user.save({validateBeforeSave:true});
+
+    await sendEmail({email: "admin@io", name: 'Admin'}, {
+        email: req.user.email,
+        name: req.user.name
+    }, 'Password Reset token', resetToken);
+
+
+    res.status(200).json({
+        status:'success',
+        message:'Successfully reset token to your email'
+    })
+
+})
+
+export {loginUser,signUpUser,grantPermission,getUserFromJWT,verifyOwnership,passwordReset,generateResetToken,passwordResetWithToken};

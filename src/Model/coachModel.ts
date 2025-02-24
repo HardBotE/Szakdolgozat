@@ -15,7 +15,7 @@ const schema = new mongoose.Schema<ICoach>(
             ref: "Category",
             required: true
         },
-        availability:{
+        availability:[{
             type:{
                 day:{
                     type: String,
@@ -35,7 +35,7 @@ const schema = new mongoose.Schema<ICoach>(
                 },
             },
             required:false
-        },
+        }],
         description: {
             type: String,
             required: true
