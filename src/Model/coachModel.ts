@@ -8,43 +8,15 @@ const schema = new mongoose.Schema<ICoach>(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
             required: true,
-
         },
         category_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Category",
             required: true
         },
-        availability:[{
-            type:{
-                day:{
-                    type: String,
-                    enum:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
-                },
-                startTime:{
-                    type: Date,
-                    required:true,
-                },
-                endTime:{
-                    type: Date,
-                    required:true,
-                },
-                reserved:{
-                    type:Boolean,
-                    default:false
-                },
-            },
-            required:false
-        }],
         description: {
             type: String,
             required: true
-        },
-        price: {
-            type: Number,
-            required: true,
-            min: 0,
-
         },
         rating: {
             type: Number,
