@@ -4,6 +4,8 @@ import { AppError } from "../Utils/AppError";
 import coachModel from "../Model/coachModel";
 import availabilityModel from "../Model/availabilityModel";
 import IAvailability from "../Types/availability.type";
+import sessionModel from "../Model/sessionModel";
+import mongoose from "mongoose";
 
 
 
@@ -26,7 +28,10 @@ const createAvailability = catchAsync(async function (req: Request, res: Respons
         price:data.price,
         startTime: new Date(data.startTime),
         endTime: new Date(data.endTime),
-        reserved: false
+        reservation: {
+            reserved: false,
+            reservedBy: null
+        },
     }));
 
 
@@ -108,4 +113,81 @@ const getAvailability = catchAsync(async function (req: Request, res: Response, 
     });
 });
 
-export { createAvailability, deleteAvailability, getAvailability };
+const reserveOccasion = catchAsync(async function (req: Request, res: Response, next: NextFunction) {
+    const occasion = await availabilityModel.findById(req.params.id);
+
+    if (!occasion) {
+        return next(new AppError("Availability not found", 404, "The selected availability does not exist."));
+    }
+
+    if (occasion.reservation.reserved) {
+        return next(new AppError("Already reserved", 400, "This availability is already reserved."));
+    }
+
+    // 🔹 Frissítés és új objektum visszakapása
+    const updatedOccasion = await availabilityModel.findByIdAndUpdate(
+        req.params.id,
+        {
+            $set: {
+                "reservation.reserved": true,
+                "reservation.reservedBy": new mongoose.Types.ObjectId(req.user.id)
+            }
+        },
+        { new: true } // 🔹 A frissített dokumentumot adja vissza
+    );
+
+    console.log(updatedOccasion);
+
+    const session = await sessionModel.create({
+        date: {
+            day: updatedOccasion.day,
+            startTime: updatedOccasion.startTime,
+            endTime: updatedOccasion.endTime
+        },
+        coach_id: updatedOccasion.coach_Id,
+        client_id: req.user.id
+    });
+
+    res.status(200).json({
+        status: "success",
+        message: "Successfully reserved availability",
+        session,
+        occasion: updatedOccasion
+    });
+});
+
+const cancelOccasion = catchAsync(async function (req: Request, res: Response, next: NextFunction) {
+    const session = await sessionModel.findByIdAndUpdate(req.params.id,{status:"canceled"},{new: true});
+
+    if (!session) {
+        return next(new AppError("Session not found", 404, "The session does not exist."));
+    }
+
+
+    // 🔹 Most a foglalást keresni kell, de a keresési feltételben `"reservation.reserved": false` helyett `true` kell!
+    const occasion = await availabilityModel.findOneAndUpdate(
+        {
+            coach_Id: session.coach_id,
+            day: session.date.day,
+            startTime: session.date.startTime,
+            endTime: session.date.endTime,
+            "reservation.reserved": true, // 🔹 Csak az aktív foglalásokat keressük!
+            "reservation.reservedBy": new mongoose.Types.ObjectId(req.user.id) // 🔹 Biztosan ObjectId legyen
+        },
+        { $set: { "reservation.reserved": false, "reservation.reservedBy": null } },
+        { new: true } // 🔹 A frissített dokumentumot adja vissza
+    );
+
+    if (!occasion) {
+        return next(new AppError("Cannot cancel session", 404, "You cannot cancel a session you don't own."));
+    }
+
+    res.status(200).json({
+        status: "success",
+        message: "Successfully cancelled reservation",
+        session,
+        occasion
+    });
+});
+
+export { createAvailability, deleteAvailability, getAvailability,reserveOccasion,cancelOccasion };

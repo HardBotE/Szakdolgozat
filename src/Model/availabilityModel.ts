@@ -1,10 +1,6 @@
 import mongoose, {Model} from "mongoose";
 import IAvailability from "../Types/availability.type";
 
-
-
-
-
 const schema=new mongoose.Schema<IAvailability>({
     day:{
         type:String,
@@ -19,10 +15,18 @@ const schema=new mongoose.Schema<IAvailability>({
         type:Date,
         required:true
     },
-    reserved:{
-        type:Boolean,
-        default:false
-    },
+        reservation: {
+            reserved: {
+                type: Boolean,
+                required: true,
+                default: false
+            },
+            reservedBy: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+                default: null
+            }
+        },
     coach_Id:{
         type:mongoose.Schema.Types.ObjectId,
         required:true
@@ -42,18 +46,6 @@ const schema=new mongoose.Schema<IAvailability>({
     }
 
 });
-
-schema.methods.reserve= async function (){
-    this.reserved=true;
-
-    await this.save();
-}
-
-schema.methods.cancel=async function (){
-    this.reserved = false;
-
-    await this.save();
-}
 
 const availabilitySchema:Model<IAvailability>=mongoose.model('availability',schema);
 

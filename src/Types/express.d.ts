@@ -12,6 +12,10 @@ declare module "express" {
     export interface Request {
         _id: string;
         user:IUser;
+        price:number;
+        profile:string;
+        background:string;
+        session_files:string;
         category:ICategory;
         email:IEmail;
         availability:IAvailability;

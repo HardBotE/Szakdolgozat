@@ -1,7 +1,7 @@
 import sessionModel from "../Model/sessionModel";
 import {deleteOneById, findAll, findOneById, updateOneById} from "./FactoryController";
 import catchAsync from "../Utils/CatchAsyncError";
-import {NextFunction, Request, Response} from "express";
+import {NextFunction, Request, RequestHandler, Response} from "express";
 import {AppError} from "../Utils/AppError";
 
 const createSession= catchAsync(async function(req:Request,res:Response,next:NextFunction){
@@ -34,15 +34,27 @@ const createSession= catchAsync(async function(req:Request,res:Response,next:Nex
 
 })
 
-
 //lehet reworkolom
 const updateSession=updateOneById(sessionModel,['id','_id','user_id','coach_id']);
 
 const findOneSession=findOneById(sessionModel);
 
-const findAllSession=findAll(sessionModel);
+const findAllSession= catchAsync(async (req:Request,res:Response,next:NextFunction)=>{
+
+        const data=await sessionModel.find({client_id:req.user.id});
+
+        if(!data)
+            res.status(404).json({
+                message:'No element found with that ID'
+            });
+
+        res.status(200).json({
+            data,
+            message:'Successfully sent data'
+        });
+
+    });
 
 const deleteSession= deleteOneById(sessionModel);
-
 
 export {createSession,updateSession,findOneSession,deleteSession,findAllSession};
