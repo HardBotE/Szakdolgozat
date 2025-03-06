@@ -1,0 +1,9 @@
+<menu>
+  <div *ngFor="let category of categories" class="card" [ngStyle]="{'background-image': 'url(http://localhost:3000/public/category_backgrounds/' + category.image + ')'}">
+    <div class="card-content">
+      <h3>{{ category.name }}</h3>
+      <p>{{ category.description }}</p>
+    </div>
+
+  </div>
+</menu>
