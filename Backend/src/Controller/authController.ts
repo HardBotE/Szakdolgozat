@@ -88,6 +88,8 @@ const loginUser=catchAsync(async (req:Request,res:Response,next:NextFunction) =>
     }
 
     createJWT(user,200,res);
+    
+
 });
 
 const grantPermission=(...roles:string[])=>( req:Request,res:Response,next:NextFunction) => {
@@ -137,7 +139,10 @@ const getUserFromJWT: RequestHandler = catchAsync(async (req: Request, res: Resp
         req.user._id = user._id;
         res.locals.user = user;
         console.log('User found: '+req.user);
-        return next();
+        res.status(200).json({
+            message:'Successfully logged in',
+            user:req.user,
+        })
     } catch (err) {
         console.log("Error in getUserFromJWT:", err);
         return next(err);
@@ -253,4 +258,19 @@ const generateResetToken=catchAsync(async (req:Request,res:Response,next:NextFun
 
 })
 
-export {loginUser,signUpUser,grantPermission,getUserFromJWT,verifyOwnership,passwordReset,generateResetToken,passwordResetWithToken};
+const logOut=catchAsync(async (req:Request, res:Response,next:NextFunction)=>{
+
+    const cookieSettings={
+        expires:new Date(Date.now() + 1000),
+        httpOnly:true,
+    };
+
+    res.cookie('jwt','',cookieSettings);
+
+    res.status(402).json({
+        message:'Successfully logged out',
+        status:'success'
+    });
+});
+
+export {loginUser,signUpUser,grantPermission,getUserFromJWT,verifyOwnership,passwordReset,generateResetToken,passwordResetWithToken,logOut};

@@ -20,6 +20,7 @@ declare module "express" {
         email:IEmail;
         uploadedData:string;
         naming:string;
+        type:string;
         availability:IAvailability;
         resetData:IResetPassword;
         coach:ICoach;

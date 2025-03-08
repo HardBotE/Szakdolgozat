@@ -1,6 +1,6 @@
 <header class="coaching-header">
   <!-- Brand/Logo Section -->
-  <div class="header-brand">
+  <div class="header-brand" (click)="goToHomePage()">
     <img ngSrc="assets/logo.png" alt="CoachConnect Logo" class="logo" height="40" width="40">
 
 
@@ -11,28 +11,33 @@
   <nav class="header-navigation">
     <!-- Public Navigation (Always Visible) -->
     <ul class="public-nav">
-      <li><a routerLink="/explore-coaches">Find a Coach</a></li>
+      <li><a routerLink="/">Find a Coach</a></li>
       <li><a routerLink="/how-it-works">How It Works</a></li>
+      <!-- Ha  a stripe ki meg lesz csinalva backenden jobban akkor add hozz a routeot.
       <li><a routerLink="/pricing">Pricing</a></li>
+      -->
     </ul>
 
     <!-- Authenticated User Navigation -->
     <ul class="user-nav" *ngIf="isLoggedIn">
-      <li><a routerLink="/dashboard">My Dashboard</a></li>
+      <li><a routerLink="/messages">Messaging</a></li>
       <li><a routerLink="/sessions">My Sessions</a></li>
       <li><a routerLink="/profile">Profile</a></li>
+      <!--Clients can become coaches-->
+      <li *ngIf="this.loggedInUser!.role==='client'"><a> Become a coach </a></li>
       <li><a (click)="onLogout()" class="logout-btn">Logout</a></li>
     </ul>
+
 
     <!-- Authentication Actions -->
     <div class="auth-actions" *ngIf="!isLoggedIn">
       <button routerLink="/login" class="btn-login">Log In</button>
-      <button routerLink="/signup" class="btn-signup">Start Now!</button>
+      <button routerLink="/register" class="btn-signup">Start Now!</button>
     </div>
   </nav>
 
   <!-- User Greeting -->
   <div class="user-greeting" *ngIf="isLoggedIn">
-    Welcome back, {{ userName }}! 👋
+    Welcome back, {{ this.loggedInUser?.name }}! 👋
   </div>
 </header>

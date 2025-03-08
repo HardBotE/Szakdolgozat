@@ -1,6 +1,6 @@
 import multer, { FileFilterCallback } from "multer";
 import path from "path";
-import {NextFunction, Request} from "express";
+import {NextFunction, Request,Response} from "express";
 import SessionModel from "../Model/sessionModel";
 import CategoryModel from "../Model/categoryModel";
 import UserModel from "../Model/userModel";
@@ -31,7 +31,11 @@ const storage = (filePath: string,) => {
             }
 
             req.uploadedData=naming;
-            req.naming=file.fieldname + '-' +naming + path.extname(file.originalname).toLowerCase();
+            req.type=type;
+            if(req.uploadedData!=='fallbackimage.jpg')
+                req.naming=file.fieldname + '-' +naming + path.extname(file.originalname).toLowerCase();
+            else if(req.uploadedData=='fallbackimage.jpg')
+                req.naming=req.uploadedData;
             cb(null, req.naming);
         },
     });
@@ -68,4 +72,44 @@ const upload = (filePath: string) => {
     });
 };
 
-export { storage, upload };
+const updateModelWithFile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    if (!req.file || !req.uploadedData) {
+        return next();
+    }
+
+    try {
+        let updatedField = {};
+        let model;
+
+        if (req.type === "session") {
+            model = SessionModel;
+            updatedField = { filePath: `public/session_files/${req.naming}` };
+        } else if (req.type === "category") {
+            model = CategoryModel;
+            updatedField = { backgroundImage: `public/category_backgrounds/${req.naming}` };
+        } else if (req.type === "profile") {
+            model = UserModel;
+            updatedField = { profilePicture: `public/profile_pictures/${req.naming}` };
+        }
+
+        if (!model) {
+            res.status(400).json({ error: "Invalid file type." });
+            return; // Fontos: Ne hívj next(), ha már válaszoltál!
+        }
+
+        const doc = await model.findByIdAndUpdate(req.uploadedData, updatedField, { new: true });
+
+        if (!doc) {
+            res.status(404).json({ error: "Record not found." });
+            return;
+        }
+
+        return next(); // Csak akkor hívódik meg, ha minden sikeres
+    } catch (error) {
+        console.error("Error updating model:", error);
+        res.status(500).json({ error: "Database update failed.", details: (error as Error).message });
+    }
+};
+
+
+export { storage, upload ,updateModelWithFile};

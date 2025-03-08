@@ -7,7 +7,7 @@ import {
     signUpUser,
     verifyOwnership,
     passwordReset,
-    generateResetToken, passwordResetWithToken
+    generateResetToken, passwordResetWithToken, logOut
 } from "../Controller/authController";
 import express from "express";
 
@@ -16,11 +16,13 @@ const router=express.Router();
 router.route('/')
     .get(findAllUsers);
 
-router.get('/me',getUserFromJWT,grantPermission('admin','client','coach'));
+router.route('/me').get(getUserFromJWT);
 
 router.post('/register',signUpUser);
 
 router.post('/login',loginUser);
+
+router.post('/logout',logOut);
 
 router.post('/passwordReset',getUserFromJWT,passwordReset);
 

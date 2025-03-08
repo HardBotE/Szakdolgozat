@@ -1,9 +1,10 @@
 import express, {NextFunction,Request,Response} from "express";
-import { upload } from "../Utils/multerConfig";
+import {updateModelWithFile, upload} from "../Utils/multerConfig";
 import {getUserFromJWT} from "../Controller/authController";
 import {Model} from "mongoose";
 
 const router = express.Router();
+
 
 
 router.post('/:file_path/:id?',getUserFromJWT, (req:Request, res:Response, next:NextFunction) => {
@@ -31,6 +32,6 @@ router.post('/:file_path/:id?',getUserFromJWT, (req:Request, res:Response, next:
 
         res.json({ message: 'File uploaded successfully!', file: req.file });
     });
-});
+},updateModelWithFile);
 
 export default router;

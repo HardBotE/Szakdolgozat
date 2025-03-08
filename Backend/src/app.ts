@@ -10,8 +10,10 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
 app.use(cors({
-origin:['http://localhost:4200'],
+    origin:['http://localhost:4200'],
+    credentials: true,
 }))
 app.use(cookieParser());
 app.use((req, res, next)=>{

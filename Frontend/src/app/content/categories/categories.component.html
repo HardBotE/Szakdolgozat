@@ -1,9 +1,32 @@
-<menu>
+<menu class="category-menu">
+  <!-- Category Cards -->
   <div *ngFor="let category of categories" class="card" [ngStyle]="{'background-image': 'url(http://localhost:3000/public/category_backgrounds/' + category.image + ')'}">
+    <!-- Admin Controls -->
+    <div *ngIf="this.loggedInUser!.role==='admin'" class="admin-control">
+      <button class="edit-btn">
+        <i class="fas fa-edit"></i> Edit
+      </button>
+      <button class="delete-btn">
+        <i class="fas fa-trash-alt"></i> Delete
+      </button>
+    </div>
+
+    <!-- Card Content -->
     <div class="card-content">
       <h3>{{ category.name }}</h3>
       <p>{{ category.description }}</p>
     </div>
 
+    <!-- Action Button -->
+    <button class="view-coaches-btn">
+      <i class="fas fa-users"></i>
+      <a routerLink="categories/{{category._id}}/coaches">View Coaches</a>
+    </button>
+  </div>
+
+  <!-- Add New Category (Admin Only) -->
+  <div *ngIf="this.loggedInUser!.role==='admin'" class="create-category-card">
+    <i class="fas fa-plus-circle"></i>
+    <span>Create New Category</span>
   </div>
 </menu>
