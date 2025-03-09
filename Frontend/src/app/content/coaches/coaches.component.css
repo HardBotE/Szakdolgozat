@@ -1,0 +1,190 @@
+.coaches-container {
+  padding: 20px;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+.loading, .no-coaches {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #666;
+}
+
+.coaches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+.coach-card {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+}
+
+.coach-card:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%);
+  border-radius: 12px;
+}
+
+.coach-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.coach-info {
+  position: relative;
+  padding: 25px;
+  color: #fff;
+  z-index: 1;
+}
+
+.coach-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.profile-image {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.profile-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.coach-title {
+  flex-grow: 1;
+}
+
+.coach-name {
+  margin: 0 0 5px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.coach-email {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+.coach-description {
+  margin: 0 0 20px 0;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.coach-rating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.star {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 18px;
+}
+
+.star.filled {
+  color: #FFD700;
+}
+
+.rating-value {
+  margin-left: 6px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.coach-price {
+  margin-bottom: 16px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.price-value {
+  font-weight: 600;
+  font-size: 18px;
+  color: #4cc9f0;
+}
+
+.coach-availability {
+  margin-bottom: 20px;
+}
+
+.coach-availability h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.availability-days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.day-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.day-badge.available {
+  background-color: rgba(76, 201, 240, 0.3);
+  color: #fff;
+  font-weight: 500;
+}
+
+.book-button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #4cc9f0;
+  color: white;
+  font-weight: 500;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.book-button:hover {
+  background-color: #3db8de;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .coaches-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-image {
+    width: 60px;
+    height: 60px;
+  }
+}

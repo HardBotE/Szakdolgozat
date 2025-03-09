@@ -4,10 +4,22 @@ import catchAsync from "../Utils/CatchAsyncError";
 import {NextFunction, Request, Response} from "express";
 import userModel from "../Model/userModel";
 import {AppError} from "../Utils/AppError";
+import CoachModel from "../Model/coachModel";
 
 
 
-const findAllCoaches = findAll(coachModel);
+const findAllCoaches = catchAsync(async (req: Request, res: Response) => {
+
+    const category_id=req.params.id;
+
+    const coaches=await CoachModel.find({category_id:category_id});
+
+    res.status(200).json({
+        message:'Successfully retrieved coaches.',
+        data:coaches
+    });
+
+})
 
 const findCoach = findOneById(coachModel);
 

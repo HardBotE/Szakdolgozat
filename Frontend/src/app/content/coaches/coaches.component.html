@@ -1,1 +1,51 @@
-<p>coaches works!</p>
+<div class="coaches-container">
+  <div *ngIf="loading" class="loading">
+    <p>Loading coaches...</p>
+  </div>
+
+  <div *ngIf="!loading && coaches.length === 0" class="no-coaches">
+    <p>No coaches found for this category.</p>
+  </div>
+
+  <div *ngIf="!loading && coaches.length > 0" class="coaches-grid">
+    <div *ngFor="let coach of coaches" class="coach-card"
+         [ngStyle]="{'background-image': 'url(http://localhost:3000/public/category_backgrounds/' + coach.category_id.image + ')'}">
+      <div class="coach-info">
+        <div class="coach-header">
+          <div class="profile-image">
+            <!-- Assuming there's a profile picture field, if not, using a placeholder -->
+            <img src="http://localhost:3000/public/profile_pictures/{{coach.user_id._id}}.png"
+                 onerror="this.src='http://localhost:3000/public/profile_pictures/default_profile.png'" alt="{{coach.user_id.name}}">
+          </div>
+          <div class="coach-title">
+            <h3 class="coach-name">{{ coach.user_id.name }}</h3>
+            <p class="coach-email">{{ coach.user_id.email }}</p>
+          </div>
+        </div>
+
+        <p class="coach-description">{{ coach.description }}</p>
+
+        <div class="coach-rating">
+          <span *ngFor="let star of getStarArray(coach.rating)" class="star" [ngClass]="{'filled': star === 1}">★</span>
+          <span class="rating-value">({{ coach.rating }})</span>
+        </div>
+
+        <div class="coach-price">
+          <span class="price-value">${{ coach.price }}</span> per session
+        </div>
+
+        <div class='coach-info'>
+          <span *ngIf="coach.availability!=undefined">
+            This coach has {{coach.availability.length}}  available classes.
+          </span>
+          <span *ngIf="coach.availability==undefined">
+            This coach has no available classes.
+          </span>
+
+        </div>
+
+        <button class="book-button" *ngIf="coach.availability!=undefined">Book Session</button>
+      </div>
+    </div>
+  </div>
+</div>

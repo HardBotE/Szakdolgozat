@@ -14,6 +14,9 @@ const schema = new mongoose.Schema<ICoach>(
             ref: "Category",
             required: true
         },
+        motto:{
+            type:String,
+        },
         description: {
             type: String,
             required: true
