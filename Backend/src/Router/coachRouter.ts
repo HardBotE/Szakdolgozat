@@ -17,8 +17,8 @@ router.route("/:id")
     .delete(getUserFromJWT,grantPermission('admin','coach'),verifyOwnership('id'),deleteCoach);
 
 router.route('/:id/availability')
-    .get(getUserFromJWT,getAvailability)
-    .post(getUserFromJWT,grantPermission('coach'),verifyOwnership('id'),createAvailability)
+    .get(getAvailability)
+    .post(getUserFromJWT,grantPermission('coach'),verifyOwnership('user_id'),createAvailability)
     .delete(getUserFromJWT,grantPermission('coach'),deleteAvailability);
 
 

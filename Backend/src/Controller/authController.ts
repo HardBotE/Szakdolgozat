@@ -4,7 +4,7 @@ import {NextFunction, Request, RequestHandler, Response} from "express";
 import jwt from 'jsonwebtoken';
 
 import {AppError} from "../Utils/AppError";
-import mongoose from "mongoose";
+import mongoose, {Schema} from "mongoose";
 import sendEmail from "../Email/mailer";
 import {Email, SignUpBody} from "../Types/user.type";
 import crypto from "crypto";
@@ -138,11 +138,8 @@ const getUserFromJWT: RequestHandler = catchAsync(async (req: Request, res: Resp
         req.user=user;
         req.user._id = user._id;
         res.locals.user = user;
-        console.log('User found: '+req.user);
-        res.status(200).json({
-            message:'Successfully logged in',
-            user:req.user,
-        })
+
+        next();
     } catch (err) {
         console.log("Error in getUserFromJWT:", err);
         return next(err);

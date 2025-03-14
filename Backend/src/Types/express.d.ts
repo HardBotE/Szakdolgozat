@@ -21,6 +21,7 @@ declare module "express" {
         uploadedData:string;
         naming:string;
         type:string;
+        paymentId:string;
         availability:IAvailability;
         resetData:IResetPassword;
         coach:ICoach;

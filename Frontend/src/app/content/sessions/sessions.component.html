@@ -1,1 +1,28 @@
-<p>sessions works!</p>
+<div class="sessions-container">
+  <h2>My Sessions</h2>
+  <p>You have <strong>{{ sessions.length }}</strong> session{{ sessions.length !== 1 ? 's' : '' }}.</p>
+
+  <div *ngFor="let session of sessions" class="session-card">
+    <h3>Session with Coach</h3>
+    <p class="coach-name">{{ session.coach_id }}</p>
+
+    <div class="session-details">
+      <p><strong>Day:</strong> {{ session.date.day }}</p>
+      <p><strong>Start Time:</strong> {{ session.date.startTime }}</p>
+      <p><strong>End Time:</strong> {{ session.date.endTime }}</p>
+    </div>
+
+    <p class="session-status" [ngClass]="session.status === 'confirmed' ? 'confirmed' : 'pending'">
+      {{ session.status | uppercase }}
+    </p>
+    <p class="session-status" *ngIf="session.status==='pending'">
+      <button (click)="startPay(session._id)">
+        Pay for the session.
+      </button>
+    </p>
+  </div>
+
+  <div *ngIf="sessions.length === 0" class="no-sessions">
+    <p>No upcoming sessions available.</p>
+  </div>
+</div>

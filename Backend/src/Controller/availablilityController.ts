@@ -32,6 +32,8 @@ const createAvailability = catchAsync(async function (req: Request, res: Respons
             reserved: false,
             reservedBy: null
         },
+        description: data.description,
+        meetingDetails:data.meetingDetails,
     }));
 
 
@@ -42,13 +44,14 @@ const createAvailability = catchAsync(async function (req: Request, res: Respons
 
     for (const newAvailability of availabilitiesArray) {
         const {day, startTime, endTime} = newAvailability;
-
+        console.log(newAvailability);
         const conflict = currentAvailabilites.some(currentData =>
             currentData.day === day &&
             (
-                (currentData.startTime <=startTime || startTime > currentData.endTime) &&
-                (currentData.startTime <=endTime  || endTime >currentData.endTime) &&
-                (startTime < endTime)));
+                (startTime >= currentData.startTime && startTime < currentData.endTime) ||
+                (endTime > currentData.startTime && endTime <= currentData.endTime) ||
+                (startTime < currentData.startTime && endTime > currentData.endTime)
+        ));
 
         if (conflict) {
             conflicts.push({...newAvailability, error: "Time conflict with an existing availability"});
@@ -64,7 +67,7 @@ const createAvailability = catchAsync(async function (req: Request, res: Respons
             added: validAvailabilities,
             conflicts,
             message: validAvailabilities.length > 0
-                ? "Some availabilities were added successfully."
+                    ? "Availabilities were added successfully."
                 : "No availabilities were added due to conflicts."
         });
 

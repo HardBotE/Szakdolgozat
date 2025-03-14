@@ -21,6 +21,7 @@ import {RouterLink} from '@angular/router';
 export class CategoriesComponent implements OnInit {
   constructor(private http: HttpClient) {}
   categories:{_id:string,name: string,description:string,image?:string}[]=[];
+
   loggedInUser:IUser={ _id:'', name:'',role:'',email:'',photo:'' };
 
   ngOnInit() {

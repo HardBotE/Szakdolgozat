@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/public', express.static(path.join(__dirname, '../public')));
-console.log("📂 Static files are served from:", path.join(__dirname, '../public'));
+
 
 /*
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {

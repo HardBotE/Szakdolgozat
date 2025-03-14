@@ -15,18 +15,18 @@ const schema=new mongoose.Schema<IAvailability>({
         type:Date,
         required:true
     },
-        reservation: {
-            reserved: {
-                type: Boolean,
-                required: true,
-                default: false
-            },
-            reservedBy: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "User",
-                default: null
-            }
+    reservation: {
+        reserved: {
+            type: Boolean,
+            required: true,
+            default: false
         },
+        reservedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            default: null
+        }
+    },
     coach_Id:{
         type:mongoose.Schema.Types.ObjectId,
         required:true

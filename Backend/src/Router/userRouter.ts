@@ -9,6 +9,7 @@ import {
     passwordReset,
     generateResetToken, passwordResetWithToken, logOut
 } from "../Controller/authController";
+import {Request,Response} from "express";
 import express from "express";
 
 const router=express.Router();
@@ -16,7 +17,14 @@ const router=express.Router();
 router.route('/')
     .get(findAllUsers);
 
-router.route('/me').get(getUserFromJWT);
+router.route('/me').get(getUserFromJWT,(req:Request, res:Response) => {
+
+    res.status(200).send({
+        message:'Succesfully retrived data',
+
+        user:req.user,
+    })
+});
 
 router.post('/register',signUpUser);
 

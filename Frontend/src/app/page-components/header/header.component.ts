@@ -17,7 +17,6 @@ import {IUser} from '../../../Utils/Types';
 })
 export class HeaderComponent implements OnInit{
   isLoggedIn: boolean = false;
-  userName: string = '';
   loggedInUser: IUser | undefined;
   constructor(private router:Router,private http:HttpClient) {
   }

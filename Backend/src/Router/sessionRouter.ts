@@ -1,4 +1,4 @@
-import express from "express";
+import express, {NextFunction} from "express";
 import {
     createSession,
     deleteSession,
@@ -21,10 +21,13 @@ router.route('/:id')
     .patch(getUserFromJWT,grantPermission('coach'),verifyOwnership("coach_id"),updateSession)
     .delete(getUserFromJWT,grantPermission('admin'),verifyOwnership("coach_id"),deleteSession);
 
-router.post('/:id/payment',payment)
+
+router.post('/:id/payment', payment);
 
 // @ts-ignore
-router.post('/:id/check_payment',checkPayment)
+router.post('/:id/check_payment',checkPayment);
+
+
 
 export default router;
 

@@ -1,13 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
-interface Availability {
-  day: string;
-  reserved: boolean;
-  _id: string;
-}
+
 
 interface User {
   _id: string;
@@ -34,13 +30,13 @@ interface Coach {
   price: number;
   rating: number;
   __v: number;
-  availability: Availability[];
+  availability: any[];
   id: string;
 }
 
 @Component({
   selector: 'app-coaches',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './coaches.component.html',
   standalone: true,
   styleUrl: './coaches.component.css'
@@ -61,6 +57,12 @@ export class CoachesComponent implements OnInit {
           next: (res) => {
             // @ts-ignore
             this.coaches = res.data;
+            this.http.get<any[]>(`http://localhost:3000/api/categories/${this.categoryId}/coaches`).subscribe(
+              (res: any) => {
+                // @ts-ignore
+                this.coaches.availability=res.data;
+              }
+            )
             this.loading = false;
             console.log('Coaches loaded:', this.coaches);
           },

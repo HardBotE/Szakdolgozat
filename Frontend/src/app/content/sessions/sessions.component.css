@@ -1,0 +1,61 @@
+.sessions-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h2 {
+  color: #3a86ff;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.session-card {
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.session-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.coach-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #3a86ff;
+}
+
+.session-details {
+  margin: 10px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.session-status {
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.confirmed {
+  background: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+}
+
+.pending {
+  background: rgba(255, 193, 7, 0.1);
+  color: #ffc107;
+}
+
+.no-sessions {
+  text-align: center;
+  font-size: 16px;
+  color: #777;
+  padding: 20px;
+}
