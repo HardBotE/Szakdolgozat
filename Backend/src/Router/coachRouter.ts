@@ -7,9 +7,17 @@ import {
 } from "../Controller/coachController";
 import {getUserFromJWT, grantPermission, verifyOwnership} from "../Controller/authController";
 import messageRouter from "./messageRouter";
-import {createAvailability, deleteAvailability, getAvailability} from "../Controller/availablilityController";
+import {
+    createAvailability,
+    deleteAvailability,
+    getAvailability,
+    getOneAvailability
+} from "../Controller/availablilityController";
 
 const router=express.Router();
+
+router.route('/availability/getFiltered')
+    .post(getOneAvailability);
 
 router.route("/:id")
     .get(findCoach)
@@ -20,6 +28,7 @@ router.route('/:id/availability')
     .get(getAvailability)
     .post(getUserFromJWT,grantPermission('coach'),verifyOwnership('user_id'),createAvailability)
     .delete(getUserFromJWT,grantPermission('coach'),deleteAvailability);
+
 
 
 router.use('/:id/sessions',sessionRouter);

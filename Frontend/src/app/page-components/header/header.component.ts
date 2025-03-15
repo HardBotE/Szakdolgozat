@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {NgIf, NgOptimizedImage} from '@angular/common';
 import {Router, RouterLink} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
-import {IUser} from '../../../Utils/Types';
+import {IUser} from '../../Utils/Types';
 @Component({
   selector: 'app-header',
   standalone: true,

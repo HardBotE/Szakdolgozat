@@ -2,11 +2,14 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {NgClass, NgForOf, UpperCasePipe,NgIf} from '@angular/common';
 import {Router} from '@angular/router';
+import {formatTime} from '../../Utils/conversions';
 
 interface ISession {
   _id: string;
   client_id: string;
   coach_id: string;
+  coach_name?:string;
+  session_location?:string;
   date:{
     day: string,
     startTime: Date,
@@ -39,6 +42,15 @@ export class SessionsComponent implements OnInit {
     this.http.get('http://localhost:3000/api/sessions',{withCredentials:true}).subscribe((res)=>{
       // @ts-ignore
       res.data.forEach((item:ISession) => {
+        this.http.get(`http://localhost:3000/api/coaches/${item.coach_id}`).subscribe((res)=>{
+
+          //@ts-ignore
+          item.coach_name=res.data.user_id.name;
+        })
+        this.http.post(`http://localhost:3000/api/coaches/availability/getFiltered`,{day:item.date.day,startTime:item.date.startTime,endTime:item.date.endTime,coach_Id:item.coach_id}).subscribe((res)=>{
+          //@ts-ignore
+          item.session_location=res.data.meetingDetails;
+        })
         this.sessions.push(item);
       })
     })
@@ -60,4 +72,7 @@ export class SessionsComponent implements OnInit {
        });
 
    }
+
+
+  protected readonly formatTime = formatTime;
 }

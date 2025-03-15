@@ -2,7 +2,7 @@
 import { Component ,OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {NgForOf, NgIf, NgStyle} from '@angular/common';
-import {IUser} from '../../../Utils/Types';
+import {IUser} from '../../Utils/Types';
 import {RouterLink} from '@angular/router';
 
 @Component({

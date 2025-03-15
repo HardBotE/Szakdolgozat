@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { IUser } from '../../../Utils/Types';
-import { CommonModule } from '@angular/common';
+import { IUser } from '../../Utils/Types';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {find} from 'rxjs';
+import {formatTime} from '../../Utils/conversions';
 
 interface IAvailability {
   day: string;
@@ -24,6 +24,7 @@ interface IAvailability {
 interface ICoach {
   _id: string;
   user_id: string;
+  coachName?: string|'Unknown Coach';
   category_id: {
     _id: string;
     name: string;
@@ -38,7 +39,7 @@ interface ICoach {
 @Component({
   selector: 'app-reserve',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, NgOptimizedImage],
   templateUrl: './reserve.component.html',
   styleUrl: './reserve.component.css'
 })
@@ -76,6 +77,8 @@ export class ReserveComponent implements OnInit {
         .subscribe(
           (res: any) => {
             this.coach = res.data;
+            // @ts-ignore
+            this.coach.coachName=res.data.user_id.name;
             console.log(this.coach);
 
           });
@@ -91,20 +94,7 @@ export class ReserveComponent implements OnInit {
   }
 
 
-  formatTime(isoString: string): string {
-    let isoHour = isoString.split('T')[1];
-    isoString = isoString.split('T')[0];
 
-    const formattedOutPut=isoString+'-'+isoHour.split('.')[0];
-
-    try {
-      const date = new Date(formattedOutPut);
-
-      return formattedOutPut;
-    } catch (e) {
-      return isoString;
-    }
-  }
 
 
   getDay(startDate:string|Date) {
@@ -129,4 +119,5 @@ export class ReserveComponent implements OnInit {
   }
 
 
+  protected readonly formatTime = formatTime;
 }

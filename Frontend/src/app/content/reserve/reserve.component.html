@@ -10,10 +10,10 @@
   <ng-container *ngIf="coach">
     <div class="profile-section">
       <div class="profile-image">
-        <img [src]="'http://localhost:3000/public/profile_pictures/default_profile.png'" alt="Coach profile image">
+        <img src="http://localhost:3000/public/profile_pictures/default_profile.png" alt="Coach profile image">
       </div>
       <div class="profile-info">
-        <h2>Lajos</h2>
+        <h2>{{coach.coachName}}</h2>
         <p class="category">{{ coach.category_id.name }}</p>
         <p class="description">{{ coach.description }}</p>
 
@@ -65,7 +65,7 @@
                   class="btn btn-reserve" (click)="reserveSlot(slot._id)">
             Reserve
           </button>
-          <button *ngIf="isLoggedIn && loggedInUser._id ===slot.reservation.reservedBy && slot.reservation.reserved"
+          <button *ngIf="loggedInUser._id ===slot.reservation.reservedBy && slot.reservation.reserved"
                   class="btn btn-cancel" (click)="reserveSlot(slot._id)">
             Cancel
           </button>

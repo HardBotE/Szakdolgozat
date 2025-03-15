@@ -2,24 +2,37 @@
   <h2>My Sessions</h2>
   <p>You have <strong>{{ sessions.length }}</strong> session{{ sessions.length !== 1 ? 's' : '' }}.</p>
 
-  <div *ngFor="let session of sessions" class="session-card">
-    <h3>Session with Coach</h3>
-    <p class="coach-name">{{ session.coach_id }}</p>
+  <div *ngFor="let session of sessions" class="session-card" [ngClass]="{
+        'success_session-card': session.status === 'paid',
+        'pending_session-card': session.status === 'pending',
+      }">
+    <h3 class="coach-name">Session with {{session.coach_name}}</h3>
 
     <div class="session-details">
       <p><strong>Day:</strong> {{ session.date.day }}</p>
-      <p><strong>Start Time:</strong> {{ session.date.startTime }}</p>
-      <p><strong>End Time:</strong> {{ session.date.endTime }}</p>
+      <p><strong>Start Time:</strong> {{formatTime(session.date.startTime.toString()) }}</p>
+      <p><strong>End Time:</strong> {{ formatTime(session.date.endTime.toString()) }}</p>
+      <p>
+        <ng-container *ngIf="session.session_location?.startsWith('http'); else plainText">
+          <a [href]="session.session_location" target="_blank">{{ session.session_location }}</a>
+        </ng-container>
+
+        <ng-template #plainText>
+          <div>{{ session.session_location }}</div>
+        </ng-template>
+      </p>
     </div>
 
-    <p class="session-status" [ngClass]="session.status === 'confirmed' ? 'confirmed' : 'pending'">
+    <div class="session-status" [ngClass]="{
+        'confirmed': session.status === 'paid',
+        'pending': session.status === 'pending',
+      }">
       {{ session.status | uppercase }}
-    </p>
-    <p class="session-status" *ngIf="session.status==='pending'">
-      <button (click)="startPay(session._id)">
-        Pay for the session.
-      </button>
-    </p>
+    </div>
+
+    <div *ngIf="session.status === 'pending'" class="session-pay">
+      <button class="btn-pay" (click)="startPay(session._id)">Pay for the session</button>
+    </div>
   </div>
 
   <div *ngIf="sessions.length === 0" class="no-sessions">

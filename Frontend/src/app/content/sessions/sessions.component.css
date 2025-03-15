@@ -1,5 +1,5 @@
 .sessions-container {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 20px;
 }
@@ -8,49 +8,104 @@ h2 {
   color: #3a86ff;
   text-align: center;
   margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 700;
 }
 
 .session-card {
   background: white;
   border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+.success_session-card{
+  border-left: 5px solid #19aa1c;
+
+}
+
+.pending_session-card{
+  border-left: 5px solid #ae7b0d;
+
 }
 
 .session-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.18);
 }
 
+/* Coach neve */
 .coach-name {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   color: #3a86ff;
+  margin-bottom: 5px;
 }
 
+/* Session adatok */
 .session-details {
   margin: 10px 0;
-  font-size: 14px;
-  color: #555;
+  font-size: 15px;
+  color: #444;
+  line-height: 1.6;
 }
 
+/* Tranzakciós állapot */
 .session-status {
   font-weight: bold;
-  padding: 5px 10px;
+  padding: 6px 12px;
   border-radius: 5px;
   display: inline-block;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  width: fit-content;
+  margin: 10px auto;
 }
 
+/* 🔹 Státusz színek */
 .confirmed {
-  background: rgba(40, 167, 69, 0.1);
-  color: #28a745;
+  background: linear-gradient(to right, #28a745, #218838);
+  color: white;
+  border: 1px solid #1e7e34;
 }
 
 .pending {
-  background: rgba(255, 193, 7, 0.1);
-  color: #ffc107;
+  background: linear-gradient(to right, #ffc107, #ffb300);
+  color: white;
+  border: 1px solid #d39e00;
+}
+
+.failed {
+  background: linear-gradient(to right, #dc3545, #c82333);
+  color: white;
+  border: 1px solid #bd2130;
+}
+
+/* Fizetés gomb */
+.session-pay {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.btn-pay {
+  background: linear-gradient(to right, #007bff, #0056b3);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 8px 15px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  text-transform: uppercase;
+}
+
+.btn-pay:hover {
+  background: linear-gradient(to right, #0056b3, #004494);
 }
 
 .no-sessions {
@@ -58,4 +113,7 @@ h2 {
   font-size: 16px;
   color: #777;
   padding: 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
