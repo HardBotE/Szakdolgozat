@@ -36,32 +36,43 @@ const findOneById=<T extends Document>(Model:Model<T>)=>
         });
     });
 
-const updateOneById=<T extends Document>(Model:Model<T>,restrictions?:string[])=>
-    catchAsync(async (req:Request,res:Response,next:NextFunction)=>{
-
-        if(restrictions)
-        {
-            Object.keys(req.body).forEach((key)=>{
-
-                if(restrictions.includes(key))
-                {
-                    throw new AppError(`Cannot override ${key}!`,403,'The user tried to modify a value but has no permission in this route!')
+const updateOneById = <T extends Document>(
+    Model: Model<T>,
+    restrictions?: string[]
+) =>
+    catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+        if (restrictions) {
+            Object.keys(req.body).forEach((key) => {
+                if (restrictions.includes(key)) {
+                    return next(
+                        new AppError(
+                            `Cannot override ${key}!`,
+                            403,
+                            'The user tried to modify a value but has no permission in this route!'
+                        )
+                    );
                 }
-            })
+            });
         }
 
-        const data=await Model.findByIdAndUpdate(req.params.id,req.body,{new:true});
+        console.log("Updating ID:", req.params.id);
+        console.log("Request body:", req.body);
 
-        if(!data)
-            res.status(404).json({
-                message:'No element found with that ID'
-            });
-
-        res.status(200).json({
-            data,
-            message:'Successfully updated data'
+        const data = await Model.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true,  // Ellenőrzi a model validációs szabályait
         });
 
+        if (!data) {
+            return res.status(404).json({
+                message: "No element found with that ID",
+            });
+        }
+
+        return res.status(200).json({
+            data,
+            message: "Successfully updated data",
+        });
     });
 
 const deleteOneById=<T extends Document>(Model:Model<T>)=>

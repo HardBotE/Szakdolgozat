@@ -19,7 +19,7 @@ router.route('/')
 router.route('/:id')
     .get(getUserFromJWT,verifyOwnership('user_id'),findOneSession)
     .patch(getUserFromJWT,grantPermission('coach'),verifyOwnership("coach_id"),updateSession)
-    .delete(getUserFromJWT,grantPermission('admin'),verifyOwnership("coach_id"),deleteSession);
+    .delete(getUserFromJWT,grantPermission('admin'),verifyOwnership("user_id"),deleteSession);
 
 
 router.post('/:id/payment', payment);

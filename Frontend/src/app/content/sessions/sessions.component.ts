@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {NgClass, NgForOf, UpperCasePipe,NgIf} from '@angular/common';
 import {Router} from '@angular/router';
 import {formatTime} from '../../Utils/conversions';
+import {IUser} from '../../Utils/Types';
 
 interface ISession {
   _id: string;
@@ -32,13 +33,18 @@ interface ISession {
   styleUrl: './sessions.component.css'
 })
 export class SessionsComponent implements OnInit {
-
+  loggedInUser: IUser | undefined;
   sessions:ISession[]=[];
 
   constructor(private http: HttpClient, private router:Router) {
   }
   ngOnInit() {
-
+    this.http.get('http://localhost:3000/api/users/me',{withCredentials:true}).subscribe(
+      (res) => {
+        // @ts-ignore
+        this.loggedInUser=res.user;
+      }
+    )
     this.http.get('http://localhost:3000/api/sessions',{withCredentials:true}).subscribe((res)=>{
       // @ts-ignore
       res.data.forEach((item:ISession) => {
@@ -56,6 +62,7 @@ export class SessionsComponent implements OnInit {
     })
     console.log(this.sessions)
   }
+
    startPay(sessionId:string){
      this.http.post<{ url: string }>(`http://localhost:3000/api/sessions/${sessionId}/payment`,{},{withCredentials:true})
        .subscribe({
@@ -71,6 +78,14 @@ export class SessionsComponent implements OnInit {
          error: (err) => console.error('Error:', err)
        });
 
+   }
+
+   cancelSession(sessionId:string){
+     this.http.post(`http://localhost:3000/api/reservations/${sessionId}/cancel`,{},{withCredentials:true}).subscribe(
+       (res: any) => {
+         console.log(res);
+       }
+     )
    }
 
 

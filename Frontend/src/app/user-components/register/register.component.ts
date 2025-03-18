@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Router, RouterLink} from '@angular/router';
+import {RouterLink} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 
 
@@ -10,7 +10,6 @@ import {HttpClient} from '@angular/common/http';
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    RouterLink
   ],
   styleUrls: ['./register.component.css']
 })
@@ -34,13 +33,20 @@ export class RegisterComponent {
 
 
   onSubmit(): void {
-    if (this.registerForm.valid && this.registerForm.value.password===this.registerForm.value.password_confirm) {
 
-      this.http.post('http://localhost:3000/api/users/register', this.registerForm.value).subscribe(
+
+
+      this.http.post('http://localhost:3000/api/users/register',
+        {
+          name:this.registerForm.value.name,
+          email:this.registerForm.value.email,
+          password:this.registerForm.value.password,
+          passwordConfirm:this.registerForm.value.passwordConfirm
+        }).subscribe(
         (res) => {
           console.log(res);
         })
 
     }
-  }
+
 }

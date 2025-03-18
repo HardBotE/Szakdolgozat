@@ -2,7 +2,6 @@ import catchAsync from "../Utils/CatchAsyncError";
 import UserModel from "../Model/userModel";
 import {NextFunction, Request, RequestHandler, Response} from "express";
 import jwt from 'jsonwebtoken';
-
 import {AppError} from "../Utils/AppError";
 import mongoose, {Schema} from "mongoose";
 import sendEmail from "../Email/mailer";
@@ -81,6 +80,7 @@ const loginUser=catchAsync(async (req:Request,res:Response,next:NextFunction) =>
     }
 
     const user=await UserModel.findOne({email}).select("+password");
+    console.log(user);
     console.log(password);
     console.log(user.password);
     if(!user ||! await user.isPasswordCorrect(password,user.password)){
@@ -186,20 +186,15 @@ const passwordReset=catchAsync(async (req: Request, res: Response, next: NextFun
         return next(new AppError('Passwords don\'t match!',400,'Enter identical passwords for new_password and passwordConfirm'))
     }
 
-    const hashedPassword:string= await user.hashAfterNewPassword(req.body.new_password);
 
-    if(!hashedPassword){
-        return next(new AppError('Error ocurred while hasing the password!',500,'Try again later!'));
-    }
-
-    user.password=hashedPassword;
+    user.password=req.body.new_password;
     await user.save();
 
     res.status(200).json({
         message:'Successfully changed password!'
     });
     
-})
+});
 
 const passwordResetWithToken = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const { token, newPassword,passwordConfirm } = req.body;
@@ -232,26 +227,27 @@ const passwordResetWithToken = catchAsync(async (req: Request, res: Response, ne
 
 const generateResetToken=catchAsync(async (req:Request,res:Response,next:NextFunction)=>{
     console.log('Generate reset token');
-    const user=await UserModel.findOne(req.user._id);
+    const user=await UserModel.findOne({email:req.body.email});
 
     if(!user) {
         return next(new AppError('No user found',403,'Please try again or contact support'));
     }
 
     const resetToken=await user.generateResetTokens();
-
+    console.log(resetToken);
     await user.save({validateBeforeSave:true});
+    console.log(user);
 
     await sendEmail({email: "admin@io", name: 'Admin'}, {
-        email: req.user.email,
-        name: req.user.name
+        email: user.email,
+        name: user.name
     }, 'Password Reset token', resetToken);
 
 
     res.status(200).json({
         status:'success',
         message:'Successfully reset token to your email'
-    })
+    });
 
 })
 

@@ -6,97 +6,75 @@ import availabilityModel from "../Model/availabilityModel";
 import IAvailability from "../Types/availability.type";
 import sessionModel from "../Model/sessionModel";
 import mongoose from "mongoose";
-
-
-
+import {updateOneById} from "./FactoryController";
 
 const createAvailability = catchAsync(async function (req: Request, res: Response, next: NextFunction) {
-
-    const coach = await coachModel.findOne({user_id: req.user.id});
-
-    if (!coach) {
-        return next(new AppError("Coach account not found", 404, "Please make sure that the entered data is correct."));
-    }
-
-    if (!req.body.availability || !Array.isArray(req.body.availability) || req.body.availability.length === 0) {
-        return next(new AppError("Invalid input", 400, "Please provide an array of availabilities with day, startTime, and endTime."));
-    }
-
-    const availabilitiesArray = req.body.availability.map((data:IAvailability) => ({
-        coach_Id: coach._id,
-        day: data.day,
-        price:data.price,
-        startTime: new Date(data.startTime),
-        endTime: new Date(data.endTime),
-        reservation: {
-            reserved: false,
-            reservedBy: null
-        },
-        description: data.description,
-        meetingDetails:data.meetingDetails,
-    }));
-
-
-    const currentAvailabilites = await availabilityModel.find({coach_Id: coach._id});
-
-    const validAvailabilities: any[] = [];
-    const conflicts: any[] = [];
-
-    for (const newAvailability of availabilitiesArray) {
-        const {day, startTime, endTime} = newAvailability;
-        console.log(newAvailability);
-        const conflict = currentAvailabilites.some(currentData =>
-            currentData.day === day &&
-            (
-                (startTime >= currentData.startTime && startTime < currentData.endTime) ||
-                (endTime > currentData.startTime && endTime <= currentData.endTime) ||
-                (startTime < currentData.startTime && endTime > currentData.endTime)
-        ));
-
-        if (conflict) {
-            conflicts.push({...newAvailability, error: "Time conflict with an existing availability"});
-        } else {
-            validAvailabilities.push(newAvailability);
-        }
-    }
-
-    await availabilityModel.insertMany(validAvailabilities);
-
-        res.status(201).json({
-            status: "success",
-            added: validAvailabilities,
-            conflicts,
-            message: validAvailabilities.length > 0
-                    ? "Availabilities were added successfully."
-                : "No availabilities were added due to conflicts."
-        });
-
-});
-
-const deleteAvailability = catchAsync(async function (req: Request, res: Response, next: NextFunction) {
-
     const coach = await coachModel.findOne({ user_id: req.user.id });
 
     if (!coach) {
         return next(new AppError("Coach account not found", 404, "Please make sure that the entered data is correct."));
     }
 
-    if (!req.body.cancelAvailability || !Array.isArray(req.body.cancelAvailability) || req.body.cancelAvailability.length === 0) {
-        return next(new AppError("Invalid input", 400, "Please provide a valid array of availabilities to cancel."));
+    const { startTime, endTime, price, description, meetingDetails } = req.body;
+
+    if (!startTime || !endTime || !price) {
+        return next(new AppError("Invalid input", 400, "Please provide startTime, endTime, and price."));
     }
 
-    const deleteConditions = req.body.cancelAvailability.map(({ day, startTime, endTime }: any) => ({
+    const newAvailability = {
         coach_Id: coach._id,
-        day: day,
+        price,
         startTime: new Date(startTime),
-        endTime: new Date(endTime)
-    }));
+        endTime: new Date(endTime),
+        reservation: {
+            reserved: false,
+            reservedBy: null
+        },
+        description,
+        meetingDetails
+    };
 
-    await availabilityModel.deleteMany({ $or: deleteConditions });
+    // Ellenőrizzük, hogy van-e időütközés
+    const conflict = await availabilityModel.exists({
+        coach_Id: coach._id,
+        $or: [
+            { startTime: { $lt: newAvailability.endTime }, endTime: { $gt: newAvailability.startTime } }
+        ]
+    });
+
+    if (conflict) {
+        return next(new AppError("Time conflict", 400, "This time slot overlaps with an existing availability."));
+    }
+
+    // Ha nincs ütközés, mentjük az új elérhetőséget
+    const createdAvailability = await availabilityModel.create(newAvailability);
+
+    res.status(201).json({
+        status: "success",
+        data: createdAvailability,
+        message: "Availability was added successfully."
+    });
+});
+
+const deleteAvailability = catchAsync(async function (req: Request, res: Response, next: NextFunction) {
+    const coach = await coachModel.findOne({ user_id: req.user.id });
+
+    if (!coach) {
+        return next(new AppError("Coach account not found", 404, "Please make sure that the entered data is correct."));
+    }
+
+   const availabilityId=req.params.id;
+
+    const deletedAvailability = await availabilityModel.findByIdAndDelete(availabilityId);
+
+    if (!deletedAvailability) {
+        return next(new AppError("Availability not found", 404, "No matching availability found to delete."));
+    }
 
     res.status(200).json({
         status: "success",
-        message: "Successfully deleted availability."
+        message: "Successfully deleted availability.",
+        deletedAvailability
     });
 });
 
@@ -152,7 +130,6 @@ const reserveOccasion = catchAsync(async function (req: Request, res: Response, 
 
     const session = await sessionModel.create({
         date: {
-            day: updatedOccasion.day,
             startTime: updatedOccasion.startTime,
             endTime: updatedOccasion.endTime
         },
@@ -200,4 +177,6 @@ const cancelOccasion = catchAsync(async function (req: Request, res: Response, n
     });
 });
 
-export { createAvailability, deleteAvailability, getAvailability,reserveOccasion,cancelOccasion,getOneAvailability };
+const updateAvailability=updateOneById(availabilityModel);
+
+export { createAvailability,updateAvailability, deleteAvailability, getAvailability,reserveOccasion,cancelOccasion,getOneAvailability };

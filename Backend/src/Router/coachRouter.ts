@@ -11,13 +11,16 @@ import {
     createAvailability,
     deleteAvailability,
     getAvailability,
-    getOneAvailability
+    getOneAvailability, updateAvailability
 } from "../Controller/availablilityController";
 
 const router=express.Router();
 
 router.route('/availability/getFiltered')
     .post(getOneAvailability);
+
+router.route('/availability/:id')
+    .patch(getUserFromJWT,grantPermission('admin','coach'),verifyOwnership('user_id'),updateAvailability);
 
 router.route("/:id")
     .get(findCoach)
@@ -28,6 +31,7 @@ router.route('/:id/availability')
     .get(getAvailability)
     .post(getUserFromJWT,grantPermission('coach'),verifyOwnership('user_id'),createAvailability)
     .delete(getUserFromJWT,grantPermission('coach'),deleteAvailability);
+
 
 
 

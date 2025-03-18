@@ -35,6 +35,7 @@ const schema = new mongoose.Schema<ICoach>(
     }
 );
 
+schema.index({ user_id: 1, category_id: 1 }, { unique: true });
 
 schema.virtual("user", {
     ref: "User",

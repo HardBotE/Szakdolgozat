@@ -24,6 +24,10 @@ h2 {
   border-left: 5px solid #19aa1c;
 
 }
+.canceled_session-card{
+  border-left: 5px solid darkred;
+
+}
 
 .pending_session-card{
   border-left: 5px solid #ae7b0d;
@@ -79,7 +83,7 @@ h2 {
   border: 1px solid #d39e00;
 }
 
-.failed {
+.canceled {
   background: linear-gradient(to right, #dc3545, #c82333);
   color: white;
   border: 1px solid #bd2130;
@@ -93,6 +97,18 @@ h2 {
 
 .btn-pay {
   background: linear-gradient(to right, #007bff, #0056b3);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 8px 15px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  text-transform: uppercase;
+}
+.btn-cancel {
+  background: linear-gradient(to right, #ff003b, #9a0930);
   color: white;
   font-size: 14px;
   font-weight: bold;

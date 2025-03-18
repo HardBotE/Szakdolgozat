@@ -1,81 +1,97 @@
 <div class="container">
   <div class="header">
-    <h1>Coach Profile</h1>
+    <h1>Coach Availability</h1>
     <div class="header-actions">
-      <button *ngIf="isLoggedIn && loggedInUser._id === coach?.user_id" class="btn btn-primary">Edit Profile</button>
-      <button *ngIf="isLoggedIn && loggedInUser.role === 'client'" class="btn btn-primary">Contact Coach</button>
+      <button *ngIf="isLoggedIn && loggedInUser._id === coach?.user_id"
+              class="btn btn-primary" (click)="showAddSlotModal()">➕ Add New Slot</button>
     </div>
   </div>
 
-  <ng-container *ngIf="coach">
-    <div class="profile-section">
-      <div class="profile-image">
-        <img src="http://localhost:3000/public/profile_pictures/default_profile.png" alt="Coach profile image">
-      </div>
-      <div class="profile-info">
-        <h2>{{coach.coachName}}</h2>
-        <p class="category">{{ coach.category_id.name }}</p>
-        <p class="description">{{ coach.description }}</p>
+  <ng-container *ngIf="availabilities.length > 0">
+    <div class="availability-slots">
+      <div *ngFor="let slot of availabilities" class="slot" [ngClass]="slot.reservation.reserved ? 'reservedSlot' : ''">
 
-        <div class="profile-stats">
+        <div class="slot-day"> {{getDay(slot.startTime)}}</div>
 
-          <div class="stat-box">
-            <h3>⭐ {{ coach.rating }}</h3>
-            <p>Rating</p>
-          </div>
-          <div class="stat-box">
-            <h3>{{ availabilities.length || 0 }}</h3>
-            <p>Available Slots</p>
-          </div>
+        <div class="stat-box">
+          <h3>${{ slot.price }}</h3>
+          <p>Session Price</p>
         </div>
+
+        <div class="stat-box">
+          <p>{{ slot.description }}</p>
+        </div>
+
+        <div class="url-container stat-box">
+          <ng-container *ngIf="slot.meetingDetails.startsWith('http'); else plainText">
+            <a [href]="slot.meetingDetails" target="_blank">{{ slot.meetingDetails }}</a>
+          </ng-container>
+          <ng-template #plainText>
+            <div>{{ slot.meetingDetails }}</div>
+          </ng-template>
+        </div>
+
+        <div class="slot-time stat-box">
+          {{ formatTime(slot.startTime.toString()) }} <br> {{ formatTime(slot.endTime.toString()) }}
+        </div>
+
+        <span class="slot-status" [ngClass]="slot.reservation.reserved ? 'status-reserved' : 'status-available'">
+          {{ slot.reservation.reserved ? 'Reserved' : 'Available' }}
+        </span>
+
+        <!-- Edit button for coach -->
+        <button *ngIf="isLoggedIn && loggedInUser._id === coach?.user_id"
+                class="btn btn-edit" (click)="editSlot(slot)">
+          ✏️ Edit Availability
+        </button>
+
+        <button *ngIf="isLoggedIn && loggedInUser._id === coach?.user_id && !slot.reservation.reserved"
+                class="btn btn-edit" (click)="deleteAvailability(slot._id)">
+          ❌ Delete Availability
+        </button>
+
+        <!-- Reserve / Cancel buttons -->
+        <button *ngIf="isLoggedIn && loggedInUser._id !== coach?.user_id && !slot.reservation.reserved && loggedInUser.role==='client'"
+                class="btn btn-reserve" (click)="reserveSlot(slot._id)">
+          Reserve
+        </button>
+
+        <button *ngIf="loggedInUser._id === slot.reservation.reservedBy && slot.reservation.reserved"
+                class="btn btn-cancel" (click)="cancelSlot(slot._id)">
+          Cancel
+        </button>
       </div>
     </div>
-
-    <div class="schedule-section">
-      <div class="section-title">
-        <h2>Coach Availability</h2>
-        <button *ngIf="isLoggedIn && loggedInUser._id === coach.user_id" class="btn btn-outline">Add New Slot</button>
-      </div>
-
-      <div *ngIf="availabilities.length > 0" class="availability-slots">
-        <div *ngFor="let slot of availabilities" class="slot" [ngClass]="slot.reservation.reserved ? 'reservedSlot' : ''">
-          <div class="slot-day"> {{getDay(slot.startTime)}}</div>
-          <div class="stat-box">
-            <h3>${{ slot.price }}</h3>
-            <p>Session Price</p>
-          </div>
-          <div class="stat-box">
-            <p>{{ slot.description}}</p>
-          </div>
-          <div class="url-container stat-box">
-            <ng-container *ngIf="slot.meetingDetails.startsWith('http'); else plainText">
-              <a [href]="slot.meetingDetails" target="_blank">{{ slot.meetingDetails }}</a>
-            </ng-container>
-
-            <ng-template #plainText>
-              <div>{{ slot.meetingDetails }}</div>
-            </ng-template>
-          </div>
-
-          <div class="slot-time stat-box">{{ formatTime(slot.startTime.toString()) }} <br> {{formatTime (slot.endTime.toString()) }}</div>
-          <span class="slot-status" [ngClass]="slot.reservation.reserved ? 'status-reserved' : 'status-available'">
-            {{ slot.reservation.reserved ? 'Reserved' : 'Available' }}
-          </span>
-          <button *ngIf="isLoggedIn && loggedInUser.role !== 'coach' && !slot.reservation.reserved"
-                  class="btn btn-reserve" (click)="reserveSlot(slot._id)">
-            Reserve
-          </button>
-          <button *ngIf="loggedInUser._id ===slot.reservation.reservedBy && slot.reservation.reserved"
-                  class="btn btn-cancel" (click)="reserveSlot(slot._id)">
-            Cancel
-          </button>
-        </div>
-      </div>
-
-      <div *ngIf="!availabilities || availabilities.length === 0" class="no-availability">
-        <p>This coach has no available time slots at the moment.</p>
-      </div>
-    </div>
-
   </ng-container>
+
+  <div *ngIf="availabilities.length === 0" class="no-availability">
+    <p>This coach has no available time slots at the moment.</p>
+  </div>
+</div>
+
+<!-- Add/Edit Slot Modal -->
+<div *ngIf="showModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" (click)="closeModal()">&times;</span>
+    <h2>{{ isEditing ? 'Edit Slot' : 'Add New Slot' }}</h2>
+
+    <form (ngSubmit)="submitSlot()">
+      <label for="startTime">Start Time:</label>
+      <input type="datetime-local" id="startTime" [(ngModel)]="formData.startTime" name="startTime" required>
+
+      <label for="endTime">End Time:</label>
+      <input type="datetime-local" id="endTime" [(ngModel)]="formData.endTime" name="endTime" required>
+
+      <label for="price">Price ($):</label>
+      <input type="number" id="price" [(ngModel)]="formData.price" name="price" required>
+
+      <label for="description">Description:</label>
+      <textarea id="description" [(ngModel)]="formData.description" name="description"></textarea>
+
+      <label for="meetingDetails">Meeting Details:</label>
+      <input type="text" id="meetingDetails" [(ngModel)]="formData.meetingDetails" name="meetingDetails">
+
+      <button type="submit" class="btn btn-primary">{{ isEditing ? 'Update' : 'Create' }}</button>
+    </form>
+  </div>
 </div>

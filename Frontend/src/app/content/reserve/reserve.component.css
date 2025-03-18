@@ -220,6 +220,115 @@
   }
 }
 
+/* 🌟 Add Slot gomb */
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+/* 🌟 Edit Slot gomb */
+.btn-edit {
+  background-color: #fbbc05;
+  color: white;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-top: 10px;
+}
+
+.btn-edit:hover {
+  background-color: #e69b00;
+}
+
+/* 🌟 Modal (Popup ablak) */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  position: relative;
+}
+
+/* 🌟 Bezáró gomb */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #555;
+}
+
+.close-btn:hover {
+  color: black;
+}
+
+/* 🌟 Form elemek */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+label {
+  font-weight: bold;
+  text-align: left;
+  display: block;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* 🌟 Mentés gomb */
+.btn-primary {
+  background-color: #28a745;
+  color: white;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-top: 10px;
+}
+
+.btn-primary:hover {
+  background-color: #218838;
+}
+
+/* 🌟 Reszponzív dizájn */
 @media (max-width: 600px) {
   .availability-slots {
     grid-template-columns: repeat(1, minmax(250px, 1fr));

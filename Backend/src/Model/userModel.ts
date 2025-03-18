@@ -82,8 +82,9 @@ schema.methods.hashAfterNewPassword=async function (password:string){
 schema.methods.isPasswordResetToken=function(token:string){
     return (token===this.password_resetToken.token);
 }
-schema.methods.isPasswordCorrect=function(candidatePassword:string,hashedPassword:string){
-    return bcrypt.compare(candidatePassword,hashedPassword);
+schema.methods.isPasswordCorrect=async function (candidatePassword: string, hashedPassword: string) {
+
+    return await bcrypt.compare(candidatePassword, hashedPassword);
 
 };
 

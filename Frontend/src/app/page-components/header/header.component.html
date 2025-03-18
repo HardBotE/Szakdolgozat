@@ -24,7 +24,7 @@
       <li><a routerLink="/sessions">My Sessions</a></li>
       <li><a routerLink="/profile">Profile</a></li>
       <!--Clients can become coaches-->
-      <li *ngIf="this.loggedInUser!.role==='client'"><a> Become a coach </a></li>
+      <li *ngIf="this.loggedInUser!.role!=='admin'"><a routerLink="/coachRegister"> Become a coach </a></li>
       <li><a (click)="onLogout()" class="logout-btn">Logout</a></li>
     </ul>
 

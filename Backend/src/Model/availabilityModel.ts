@@ -2,11 +2,7 @@ import mongoose, {Model} from "mongoose";
 import IAvailability from "../Types/availability.type";
 
 const schema=new mongoose.Schema<IAvailability>({
-    day:{
-        type:String,
-        enum:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],
-        required:true
-    },
+
     startTime:{
         type:Date,
         required:true

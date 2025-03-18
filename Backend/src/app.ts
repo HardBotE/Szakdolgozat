@@ -6,15 +6,16 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import path from "path";
 const app = express();
+app.use(cors({
+    origin:['http://localhost:4200'],
+    credentials: true,
+}));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(cors({
-    origin:['http://localhost:4200'],
-    credentials: true,
-}))
+
 app.use(cookieParser());
 app.use((req, res, next)=>{
     console.log(req.body);

@@ -29,7 +29,7 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      this.http.post('http://localhost:3000/api/users/login', this.loginForm.value, {withCredentials: true})
+      this.http.post('http://localhost:3000/api/users/login', {email:this.loginForm.value.email,password:this.loginForm.value.password}, {withCredentials: true})
         .subscribe(() => {
           console.log('Successfully logged in!');
           this.router.navigate(['/']).then(() => {

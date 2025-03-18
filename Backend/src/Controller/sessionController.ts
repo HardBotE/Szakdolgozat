@@ -3,6 +3,7 @@ import {deleteOneById, findAll, findOneById, updateOneById} from "./FactoryContr
 import catchAsync from "../Utils/CatchAsyncError";
 import {NextFunction, Request, RequestHandler, Response} from "express";
 import {AppError} from "../Utils/AppError";
+import coachModel from "../Model/coachModel";
 
 const createSession= catchAsync(async function(req:Request,res:Response,next:NextFunction){
     {
@@ -39,21 +40,36 @@ const updateSession=updateOneById(sessionModel,['id','_id','user_id','coach_id']
 
 const findOneSession=findOneById(sessionModel);
 
-const findAllSession= catchAsync(async (req:Request,res:Response,next:NextFunction)=>{
+const findAllSession = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    let data;
 
-        const data=await sessionModel.find({client_id:req.user.id});
+    if (req.user.role === 'client' || req.user.role === 'admin') {
 
-        if(!data)
-            res.status(404).json({
-                message:'No element found with that ID'
-            });
+        data = await sessionModel.find({ client_id: req.user.id });
+    }
 
-        res.status(200).json({
-            data,
-            message:'Successfully sent data'
+    if (req.user.role === 'coach') {
+
+        const coach = await coachModel.findOne({ user_id: req.user.id });
+
+        if (!coach) {
+            return next(new AppError("Coach account not found", 404, "Make sure you are registered as a coach."));
+        }
+
+        data = await sessionModel.find({ coach_id: coach._id });
+    }
+
+    if (!data || data.length === 0) {
+        return res.status(404).json({
+            message: "No sessions found."
         });
+    }
 
+    res.status(200).json({
+        data,
+        message: "Successfully retrieved sessions."
     });
+});
 
 const deleteSession= deleteOneById(sessionModel);
 

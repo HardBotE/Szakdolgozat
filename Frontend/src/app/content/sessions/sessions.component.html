@@ -1,12 +1,23 @@
 <div class="sessions-container">
-  <h2>My Sessions</h2>
+  <ng-container *ngIf="loggedInUser?.role==='coach';else teachings ">
+    <h2>Classes to be held</h2>
+  </ng-container>
+
+  <ng-template #teachings>
+     <h2>My Sessions</h2>
+  </ng-template>
+
   <p>You have <strong>{{ sessions.length }}</strong> session{{ sessions.length !== 1 ? 's' : '' }}.</p>
 
   <div *ngFor="let session of sessions" class="session-card" [ngClass]="{
         'success_session-card': session.status === 'paid',
         'pending_session-card': session.status === 'pending',
+        'canceled_session-card':session.status==='canceled'
       }">
-    <h3 class="coach-name">Session with {{session.coach_name}}</h3>
+    <ng-container *ngIf="loggedInUser?.role==='client'; ">
+      <h3 class="coach-name">Session with {{session.coach_name}}</h3>
+    </ng-container>
+
 
     <div class="session-details">
       <p><strong>Day:</strong> {{ session.date.day }}</p>
@@ -26,8 +37,13 @@
     <div class="session-status" [ngClass]="{
         'confirmed': session.status === 'paid',
         'pending': session.status === 'pending',
+        'canceled':session.status==='canceled'
       }">
       {{ session.status | uppercase }}
+    </div>
+
+    <div *ngIf="session.status === 'pending'" class="session-cancel">
+      <button class="btn-cancel" (click)="cancelSession(session._id)">Cancel session</button>
     </div>
 
     <div *ngIf="session.status === 'pending'" class="session-pay">

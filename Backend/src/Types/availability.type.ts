@@ -1,7 +1,6 @@
 import mongoose, {ObjectId} from "mongoose";
 
 interface IAvailability extends Document {
-        day:string;
         startTime:Date;
         endTime:Date;
         reservation:{

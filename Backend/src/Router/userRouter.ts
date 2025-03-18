@@ -17,6 +17,20 @@ const router=express.Router();
 router.route('/')
     .get(findAllUsers);
 
+
+
+router.post('/register',signUpUser);
+
+router.post('/login',loginUser);
+
+router.post('/logout',logOut);
+router.post('/forgot_password',generateResetToken);
+router.post('/passwordReset',getUserFromJWT,passwordReset);
+
+
+
+router.post('/reset_password',passwordResetWithToken);
+
 router.route('/me').get(getUserFromJWT,(req:Request, res:Response) => {
 
     res.status(200).send({
@@ -26,21 +40,9 @@ router.route('/me').get(getUserFromJWT,(req:Request, res:Response) => {
     })
 });
 
-router.post('/register',signUpUser);
-
-router.post('/login',loginUser);
-
-router.post('/logout',logOut);
-
-router.post('/passwordReset',getUserFromJWT,passwordReset);
-
-router.post('/forgot_password',getUserFromJWT,generateResetToken);
-
-router.post('/reset_password',getUserFromJWT,passwordResetWithToken);
-
 router.route('/:id')
     .get(findUser)
-    .patch(getUserFromJWT,verifyOwnership('id'),updateUser)
+    .patch(getUserFromJWT,updateUser)
     .delete(getUserFromJWT,verifyOwnership('id'),deleteUser);
 
 
