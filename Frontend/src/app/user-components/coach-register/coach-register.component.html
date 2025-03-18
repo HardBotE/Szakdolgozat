@@ -1,0 +1,39 @@
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-header">
+      <h1>Start Your Coaching Journey</h1>
+      <p>Join as a Coach</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="registerCoach()">
+
+      <div class="form-group">
+        <label for="category">Category</label>
+        <select id="category" formControlName="category" required>
+          <option value="" disabled>Select a category</option>
+          <option *ngFor="let category of categories" [value]="category._id">
+            {{ category.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="motto">Motto</label>
+        <input type="text" id="motto" formControlName="motto" placeholder="Enter your personal motto">
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" formControlName="description" placeholder="Describe your coaching expertise"></textarea>
+      </div>
+
+      <button type="submit" class="register-button" [disabled]="registerForm.invalid">
+        Register as Coach
+      </button>
+    </form>
+
+    <div class="register-prompt">
+      Already have an account? <a routerLink="/login">Log in</a>
+    </div>
+  </div>
+</div>

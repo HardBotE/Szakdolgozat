@@ -1,0 +1,99 @@
+<div class="container">
+  <div class="profile-card">
+    <div class="profile-header">
+      <div class="profile-avatar">
+        <img src='http://localhost:3000/public/profile_pictures/default_profile.png' class="profile-avatar">
+      </div>
+      <div class="profile-title">
+        <h1>{{ loggedInUser?.name }}</h1>
+        <div>
+          <span class="profile-badge">{{loggedInUser?.role}}</span>
+          <span class="subscription-tag">{{loggedInUser?.sub_type}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-content">
+      <div class="coach-motto">
+        "Helping you achieve your maximum potential, one step at a time."
+      </div>
+
+      <div class="profile-section">
+        <h2>Coach Information</h2>
+        <div class="profile-info-grid">
+          <div class="profile-info-item">
+            <div class="info-label">Full Name</div>
+            <div class="info-value">{{ loggedInUser?.name }}</div>
+          </div>
+          <div class="profile-info-item">
+            <div class="info-label">Email</div>
+            <div class="info-value">{{loggedInUser?.email}}</div>
+          </div>
+          <div class="profile-info-item">
+            <div class="info-label">Role</div>
+            <div class="info-value">{{loggedInUser?.role}}</div>
+          </div>
+          <div class="profile-info-item">
+            <div class="info-label">Subscription</div>
+            <div class="info-value">{{loggedInUser?.sub_type}}</div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div class="action-buttons">
+        <button class="btn btn-primary" (click)="showForm('name','not-confidential')">Change Name</button>
+        <button class="btn btn-primary" (click)="showForm('photo','not-confidential')">Upload your photo</button>
+        <!-- Ha van idom megcsinalom a callolasat, de nem kene neheznek lennie
+        <button class="btn btn-primary">Password Reset Email</button>
+        -->
+        <button class="btn btn-primary" (click)="showForm('email','confidential')">Change Email</button>
+        <button class="btn btn-primary" (click)="showForm('password','confidential')">Password Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-form *ngIf="isFormActive && !isFormConfidential">
+  <form *ngIf="updatingType==='name' else pictureForm" (ngSubmit)="sender('name')">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" [(ngModel)]="formData.name" required>
+    <button type="submit">Change Name</button>
+  </form>
+</ng-form>
+
+<ng-template #pictureForm>
+  <form (ngSubmit)="sender('photo')">
+    <label for="photo">Photo:</label>
+    <input type="file" id="photo" name="photo" (change)="onFileSelected()" required>
+    <button type="submit">Upload Picture</button>
+  </form>
+</ng-template>
+
+<ng-form *ngIf="isFormActive && isFormConfidential">
+  <form *ngIf="updatingType==='password' else emailForm" (ngSubmit)="sender('password')">
+    <label for="prev-password">Previous Password</label>
+    <input type="password" id="prev-password" name="prev-password" [(ngModel)]="formData.prevPassword" required>
+
+    <label for="password">New Password</label>
+    <input type="password" id="password" name="password" [(ngModel)]="formData.password" required>
+
+    <label for="password-confirm">Password Confirm</label>
+    <input type="password" id="password-confirm" name="password-confirm" [(ngModel)]="formData.passwordConfirm" required>
+
+    <button type="submit">Change Password</button>
+  </form>
+</ng-form>
+
+<ng-template #emailForm>
+  <form (ngSubmit)="sender('email')">
+    <label for="current-password">Enter your password</label>
+    <input type="password" id="current-password" name="current-password" [(ngModel)]="formData.currentPassword" required>
+
+    <label for="email">New Email Address</label>
+    <input type="email" id="email" name="email" [(ngModel)]="formData.email" required>
+
+    <button type="submit">Change Email</button>
+  </form>
+</ng-template>
