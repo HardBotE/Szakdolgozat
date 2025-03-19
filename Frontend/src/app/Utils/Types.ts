@@ -6,7 +6,7 @@ interface IUser{
     "role": string,
     "sub_type": string,
     "email": string,
-    "photo"?: string
+    "picture"?: string
 }
 
 export type {IUser};

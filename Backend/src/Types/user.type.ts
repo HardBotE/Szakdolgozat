@@ -7,6 +7,7 @@ interface IUser extends Document {
     name: string;
     email: string;
     password: string;
+    picture: string;
     role: "admin" | "client" | "coach";
     sub_type:'normal'|'premium';
     password_resetToken:{

@@ -16,7 +16,6 @@ const schema=new mongoose.Schema<IUser>
         required:true,
         match:/^\w+@\w+\.\w+$/
 
-
     },
     password:{
         type:String,
@@ -47,6 +46,10 @@ const schema=new mongoose.Schema<IUser>
         required:false,
         hidden:true,
     },
+    picture:{
+        type:String,
+        default:'public/profile_pictures/default_profile.png'
+    }
     },{
         toJSON:{virtuals:true},
         toObject:{virtuals:true},

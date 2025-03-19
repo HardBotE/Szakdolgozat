@@ -8,6 +8,7 @@ interface ISession  extends Document {
         startTime:Date,
         endTime:Date
     };
+    file_path:string;
     status:'pending'|'paid'|'not_paid'|'canceled';
 }
 

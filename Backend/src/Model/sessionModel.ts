@@ -31,6 +31,9 @@ const schema=new mongoose.Schema<ISession>({
         },
         required:true
     },
+    file_path:[{
+      type:String,
+    }],
     status:{
         type:String,
         required:true,

@@ -45,7 +45,7 @@ interface ICoach {
 })
 export class ReserveComponent implements OnInit {
   isLoggedIn = false;
-  loggedInUser: IUser = { _id: '',sub_type:'', name: '', role: '', email: '', photo: '' };
+  loggedInUser: IUser = { _id: '',sub_type:'', name: '', role: '', email: '', picture: '' };
   showModal = false;
   isEditing = false;
   coach: ICoach | null = null;

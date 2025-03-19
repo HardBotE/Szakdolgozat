@@ -14,26 +14,25 @@ const storage = (filePath: string,) => {
         filename: function (req, file, cb) {
             let naming='';
             let type='';
-            if(req.session_files)
-            {
-                naming=req.session_files;
+            if(req.params.file_path==='session_files'){
+                naming=req.uploadType;
                 type='session';
             }
-            if(req.background)
-            {
-                naming=req.background;
+            if(req.params.file_path==='category_backgrounds'){
+                naming=req.uploadType;
                 type='category';
             }
 
-            if(req.profile){
-                naming=req.profile;
+            if(req.params.file_path==='profile_pictures'){
+                naming=req.uploadType;
                 type='profile';
             }
 
             req.uploadedData=naming;
             req.type=type;
+            console.log(req);
             if(req.uploadedData!=='fallbackimage.jpg')
-                req.naming=file.fieldname + '-' +naming + path.extname(file.originalname).toLowerCase();
+                req.naming=file.fieldname + '-' +naming+'-' + Date.now()+ path.extname(file.originalname).toLowerCase();
             else if(req.uploadedData=='fallbackimage.jpg')
                 req.naming=req.uploadedData;
             cb(null, req.naming);
@@ -45,8 +44,7 @@ const storage = (filePath: string,) => {
 const fileFilter = (filePath: string) => {
     return (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
         const imageTypes = /\.(jpg|jpeg|png|gif)$/;
-        const docTypes = /\.(pdf|doc|docx)$/;
-
+        const docTypes = /\.(pdf|doc|docx|jpg|jpeg|png)$/;
 
         if (filePath === 'category_backgrounds' || filePath === 'profile_pictures') {
             if (!file.originalname.match(imageTypes)) {
@@ -73,38 +71,40 @@ const upload = (filePath: string) => {
 };
 
 const updateModelWithFile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    if (!req.file || !req.uploadedData) {
-        return next();
-    }
-
+    console.log(req);
     try {
         let updatedField = {};
         let model;
 
         if (req.type === "session") {
             model = SessionModel;
-            updatedField = { filePath: `public/session_files/${req.naming}` };
+            updatedField = { file_path: `public/session_files/${req.naming}` };
         } else if (req.type === "category") {
             model = CategoryModel;
-            updatedField = { backgroundImage: `public/category_backgrounds/${req.naming}` };
+            updatedField = { background_image: `public/category_backgrounds/${req.naming}` };
         } else if (req.type === "profile") {
             model = UserModel;
-            updatedField = { profilePicture: `public/profile_pictures/${req.naming}` };
+            updatedField = { picture: `public/profile_pictures/${req.naming}` };
         }
 
         if (!model) {
             res.status(400).json({ error: "Invalid file type." });
-            return; // Fontos: Ne hívj next(), ha már válaszoltál!
+            return;
         }
+        let result;
+        if(model===SessionModel)
+            result = await model.findByIdAndUpdate(req.uploadType, {$push:updatedField}, { new: true });
+        if(model===CategoryModel || model=== UserModel)
+             result = await model.findByIdAndUpdate(req.uploadType, updatedField, { new: true });
 
-        const doc = await model.findByIdAndUpdate(req.uploadedData, updatedField, { new: true });
-
-        if (!doc) {
+        if (!result) {
             res.status(404).json({ error: "Record not found." });
             return;
         }
 
-        return next(); // Csak akkor hívódik meg, ha minden sikeres
+        res.status(200).json({
+            message:'successfully uploaded file'
+        })
     } catch (error) {
         console.error("Error updating model:", error);
         res.status(500).json({ error: "Database update failed.", details: (error as Error).message });

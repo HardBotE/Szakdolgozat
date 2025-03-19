@@ -1,37 +1,36 @@
 import express, {NextFunction,Request,Response} from "express";
 import {updateModelWithFile, upload} from "../Utils/multerConfig";
 import {getUserFromJWT} from "../Controller/authController";
-import {Model} from "mongoose";
+import {AppError} from "../Utils/AppError";
 
 const router = express.Router();
 
 
 
 router.post('/:file_path/:id?',getUserFromJWT, (req:Request, res:Response, next:NextFunction) => {
-
+    console.log("Inside router.post");
+    console.log("Params:", req.params);
+    console.log("File path:", req.params.file_path);
+    console.log("ID:", req.params);
     const { file_path,id } = req.params;
 
-    if(file_path==='profile_pictures'){
-        req.profile=req.user.id;
-    }
-    if(file_path==='category_backgrounds')
-    {
-        req.background=id;
-    }
-    if(file_path==='session_files'){
-        req.session_files=id;
-    }
+    if(file_path==='profile_pictures')
+        req.uploadType=req.user.id;
 
-    const uploadMiddleware = upload(file_path).single('file');
+    if(file_path==='category_backgrounds' || file_path==='session_files')
+        req.uploadType=id;
 
-    uploadMiddleware(req, res, (err) => {
+    if(!req.uploadType)
+        return next(new AppError('Unable to upload here',403,'You have to upload file in the correct path.'));
+
+
+    upload(file_path).single('file')(req, res, (err) => {
         if (err) {
-
-            return res.status(400).json({ error: err.message });
+            return next(new AppError(err.message, 400, "File upload failed"));
         }
-
-        res.json({ message: 'File uploaded successfully!', file: req.file });
+        next();
     });
+
 },updateModelWithFile);
 
 export default router;

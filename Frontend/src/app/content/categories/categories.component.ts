@@ -15,7 +15,7 @@ import {FormsModule} from '@angular/forms';
 })
 export class CategoriesComponent implements OnInit {
   categories: { _id: string; name: string; description: string; image?: string }[] = [];
-  loggedInUser: IUser = { _id: '',sub_type:'', name: '', role: '', email: '', photo: '' };
+  loggedInUser: IUser = { _id: '',sub_type:'', name: '', role: '', email: '', picture: '' };
   showModal = false;
   isEditing = false;
   formData = { name: '', description: '', image: '' };

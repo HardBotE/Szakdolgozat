@@ -19,7 +19,7 @@ export class ProfileComponent implements OnInit {
   loggedInUser: IUser | undefined;
   isFormActive = false;
   isFormConfidential = false;
-  updatingType='';
+  updatingType = '';
   formData: any = {
     name: '',
     prevPassword: '',
@@ -27,32 +27,29 @@ export class ProfileComponent implements OnInit {
     passwordConfirm: '',
     currentPassword: '',
     email: '',
-    photo: null
+    photo: null // Fájlkezeléshez
   };
-  constructor(private http: HttpClient, private router: Router) {
-  }
+
+  constructor(private http: HttpClient, private router: Router) {}
+
   ngOnInit() {
-    this.http.get('http://localhost:3000/api/users/me',{withCredentials:true}).subscribe(
-      (res) => {
-        // @ts-ignore
-        this.loggedInUser=res.user;
-        console.log(this.loggedInUser)
-      }
-    )
+    this.http.get('http://localhost:3000/api/users/me', { withCredentials: true }).subscribe((res: any) => {
+      this.loggedInUser = res.user;
+      console.log(this.loggedInUser);
+    });
   }
 
-  showForm(updatingType:string,confidentiality:string){
-    if(confidentiality == 'not-confidential'){
-      this.isFormActive=true;
-      this.isFormConfidential=false;
-      this.updatingType=updatingType;
-    }
-    if(confidentiality == 'confidential'){
-      this.isFormConfidential=true;
-      this.isFormActive=true;
-      this.updatingType=updatingType;
-    }
+  showForm(updatingType: string, confidentiality: string) {
+    this.isFormActive = true;
+    this.isFormConfidential = confidentiality === 'confidential';
+    this.updatingType = updatingType;
+  }
 
+  handleFileInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.formData.photo = input.files[0];
+    }
   }
 
   sender(updateType: string) {
@@ -60,42 +57,32 @@ export class ProfileComponent implements OnInit {
 
     if (updateType === 'name') {
       formDataToSend.append('name', this.formData.name);
-      this.http.patch(`http://localhost:3000/api/users/${this.loggedInUser?._id}`,{name:this.formData.name},{
-        withCredentials:true}).subscribe(
-        (res)=>{
-          console.log(res);
-        }
-      );
+      this.http.patch(`http://localhost:3000/api/users/${this.loggedInUser?._id}`, { name: this.formData.name }, { withCredentials: true })
+        .subscribe(() => window.location.reload());
+
     } else if (updateType === 'password') {
       formDataToSend.append('prevPassword', this.formData.prevPassword);
       formDataToSend.append('password', this.formData.password);
       formDataToSend.append('passwordConfirm', this.formData.passwordConfirm);
-      this.http.post  (`http://localhost:3000/api/users/passwordReset`, {password:this.formData.prevPassword,new_password:this.formData.password,passwordConfirm:this.formData.passwordConfirm},{withCredentials:true}).subscribe(
-        (res)=>{
-          console.log(res);
-        }
-      );
+
+      this.http.post(`http://localhost:3000/api/users/passwordReset`, {
+        password: this.formData.prevPassword,
+        new_password: this.formData.password,
+        passwordConfirm: this.formData.passwordConfirm
+      }, { withCredentials: true }).subscribe(() => window.location.reload());
+
     } else if (updateType === 'email') {
       formDataToSend.append('currentPassword', this.formData.currentPassword);
       formDataToSend.append('email', this.formData.email);
-      this.http.patch(`http://localhost:3000/api/users/${this.loggedInUser?._id}`, {email:this.formData.email},{withCredentials:true}).subscribe(
-        (res)=>{
-          console.log(res);
-        }
-      );
+
+      this.http.patch(`http://localhost:3000/api/users/${this.loggedInUser?._id}`, { email: this.formData.email }, { withCredentials: true })
+        .subscribe(() => window.location.reload());
+
     } else if (updateType === 'photo' && this.formData.photo) {
-      formDataToSend.append('photo', this.formData.photo);
-      this.http.post('http://localhost:3000/api/uploads/profile_pictures',formDataToSend,{withCredentials:true}).subscribe(
-        (res)=>{
-          console.log(res);
-        }
-      )
+      formDataToSend.append('file', this.formData.photo);
+
+      this.http.post(`http://localhost:3000/api/uploads/profile_pictures/${this.loggedInUser?._id}`, formDataToSend, { withCredentials: true })
+        .subscribe(() => window.location.reload());
     }
-
-
-  }
-
-  onFileSelected(){
-    console.log('hihi');
   }
 }

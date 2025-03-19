@@ -2,7 +2,7 @@
   <div class="profile-card">
     <div class="profile-header">
       <div class="profile-avatar">
-        <img src='http://localhost:3000/public/profile_pictures/default_profile.png' class="profile-avatar">
+        <img src='http://localhost:3000/{{loggedInUser!.picture}}' class="profile-avatar">
       </div>
       <div class="profile-title">
         <h1>{{ loggedInUser?.name }}</h1>
@@ -66,9 +66,10 @@
 <ng-template #pictureForm>
   <form (ngSubmit)="sender('photo')">
     <label for="photo">Photo:</label>
-    <input type="file" id="photo" name="photo" (change)="onFileSelected()" required>
+    <input type="file" id="photo" name="photo" (change)="handleFileInput($event)" required>
     <button type="submit">Upload Picture</button>
   </form>
+
 </ng-template>
 
 <ng-form *ngIf="isFormActive && isFormConfidential">

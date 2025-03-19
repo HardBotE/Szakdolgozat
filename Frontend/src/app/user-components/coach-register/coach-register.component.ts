@@ -21,7 +21,7 @@ export class CoachRegisterComponent implements OnInit {
   constructor(private router: Router,private http: HttpClient,private fb:FormBuilder)  {
   }
   categories: { _id: string; name: string; description: string; image?: string }[] = [];
-  loggedInUser: IUser = { _id: '',sub_type:'', name: '', role: '', email: '', photo: '' };
+  loggedInUser: IUser = { _id: '',sub_type:'', name: '', role: '', email: '', picture: '' };
 
   registerForm!:FormGroup;
   ngOnInit() {
