@@ -9,6 +9,7 @@ interface ISession {
   _id: string;
   client_id: string;
   coach_id: string;
+  coach_user_id:string;
   coach_name?:string;
   session_location?:string;
   date:{
@@ -52,6 +53,9 @@ export class SessionsComponent implements OnInit {
 
           //@ts-ignore
           item.coach_name=res.data.user_id.name;
+          //@ts-ignore
+          item.coach_user_id=res.data.user_id._id;
+          console.log(item);
         })
         this.http.post(`http://localhost:3000/api/coaches/availability/getFiltered`,{day:item.date.day,startTime:item.date.startTime,endTime:item.date.endTime,coach_Id:item.coach_id}).subscribe((res)=>{
           //@ts-ignore
@@ -88,6 +92,15 @@ export class SessionsComponent implements OnInit {
      )
    }
 
-
+  contactCoach(sessionId:string,coachId:string)
+  {
+    this.http.post(`http://localhost:3000/api/coaches/${sessionId}/message`,{id:coachId},{withCredentials:true}).subscribe(
+      (res: any) => {
+        console.log(res);
+        window.location.replace('http://localhost:4200/messages');
+      }
+    )
+  }
   protected readonly formatTime = formatTime;
+  protected readonly alert = alert;
 }

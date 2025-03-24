@@ -1,6 +1,6 @@
 <menu class="category-menu">
   <!-- Category Cards -->
-  <div *ngFor="let category of categories" class="card" [ngStyle]="{'background-image': 'url(http://localhost:3000/public/category_backgrounds/' + category.image + ')'}">
+  <div *ngFor="let category of categories" class="card" [ngStyle]="{'background-image': 'url(http://localhost:3000/' + category.background_image + ')'}">
     <!-- Admin Controls -->
     <div *ngIf="this.loggedInUser!.role==='admin'" class="admin-control">
       <button class="edit-btn" (click)="editCategory(category)">
@@ -44,8 +44,8 @@
       <label for="description">Description:</label>
       <textarea id="description" [(ngModel)]="formData.description" name="description" required></textarea>
 
-      <label for="image">Image URL:</label>
-      <input type="text" id="image" [(ngModel)]="formData.image" name="image">
+      <label for="image">Image Upload:</label>
+      <input type="file" id="image" (change)="handleFileInput($event)">
 
       <button type="submit">{{ isEditing ? 'Update' : 'Create' }}</button>
     </form>

@@ -10,6 +10,7 @@ import {PaymentFailedComponent} from './content/sessions/payment-failed/payment-
 import {CoachRegisterComponent} from './user-components/coach-register/coach-register.component';
 import {ProfileComponent} from './content/profile/profile.component';
 import {ForgotPasswordComponent} from './user-components/forgot-password/forgot-password.component';
+import {MessagingComponent} from './content/messaging/messaging.component';
 
 export const routes: Routes = [
   {path:'',component:CategoriesComponent},
@@ -22,5 +23,6 @@ export const routes: Routes = [
   {path:'forgot_password',component:ForgotPasswordComponent},
   {path:'payment_failed',component:PaymentFailedComponent},
   {path:'coach/:id',component:ReserveComponent},
+  {path:'messages',component:MessagingComponent},
   {path:'categories/:id/coaches',component:CoachesComponent}
 ];

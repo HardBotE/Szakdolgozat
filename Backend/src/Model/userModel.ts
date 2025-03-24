@@ -2,6 +2,8 @@ import mongoose, {Model} from "mongoose";
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import {IUser} from "../Types/user.type";
+import validator from 'validator';
+
 const schema=new mongoose.Schema<IUser>
 (
     {
@@ -9,14 +11,17 @@ const schema=new mongoose.Schema<IUser>
         type:String,
         required:true
     },
-    email:{
-        type:String,
-        unique:true,
-        lowercase:true,
-        required:true,
-        match:/^\w+@\w+\.\w+$/
+        email:{
+            type:String,
+            unique:true,
+            lowercase:true,
+            required:true,
+            validate:{
+                validator: (email: string) => validator.isEmail(email),
+                message:"provide a valid email"
+            }
 
-    },
+        },
     password:{
         type:String,
         required:true

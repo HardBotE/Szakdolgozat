@@ -1,5 +1,5 @@
 
-import {deleteUser, findAllUsers, findUser, updateUser} from "../Controller/userController";
+import {deleteUser, findAllUsers, findUser, returnCoachName, updateUser} from "../Controller/userController";
 import {
     getUserFromJWT,
     grantPermission,
@@ -26,7 +26,6 @@ router.post('/login',loginUser);
 router.post('/logout',logOut);
 router.post('/forgot_password',generateResetToken);
 router.post('/passwordReset',getUserFromJWT,passwordReset);
-
 
 
 router.post('/reset_password',passwordResetWithToken);

@@ -6,13 +6,14 @@ import {
     updateCoach
 } from "../Controller/coachController";
 import {getUserFromJWT, grantPermission, verifyOwnership} from "../Controller/authController";
-import messageRouter from "./messageRouter";
+
 import {
     createAvailability,
     deleteAvailability,
     getAvailability,
     getOneAvailability, updateAvailability
 } from "../Controller/availablilityController";
+import {createMessageSession} from "../Controller/messageController";
 
 const router=express.Router();
 
@@ -32,10 +33,12 @@ router.route('/:id/availability')
     .post(getUserFromJWT,grantPermission('coach'),verifyOwnership('user_id'),createAvailability)
     .delete(getUserFromJWT,grantPermission('coach'),deleteAvailability);
 
+router.route('/:id/message')
+    .post(getUserFromJWT,createMessageSession);
 
 
 
 router.use('/:id/sessions',sessionRouter);
-router.use('/:id/messages',messageRouter);
+
 
 export default router;

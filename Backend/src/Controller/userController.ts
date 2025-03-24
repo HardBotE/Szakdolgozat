@@ -11,4 +11,6 @@ const updateUser=updateOneById(userModel,['role','password','sub_type','_id']);
 
 const deleteUser=deleteOneById(userModel);
 
-export {findAllUsers,findUser,updateUser,deleteUser};
+const returnCoachName=findOneById(userModel);
+
+export {findAllUsers,findUser,updateUser,deleteUser,returnCoachName};

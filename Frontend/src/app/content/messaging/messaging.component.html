@@ -1,0 +1,43 @@
+<div class="messaging-container">
+
+  <div class="sidebar">
+    <h3>Users</h3>
+    <ul>
+      <li
+        *ngFor="let user of users"
+        (click)="selectUser(user.id)"
+        [class.active]="selectedUser === user">
+        {{ user.name || user._id }}
+      </li>
+    </ul>
+  </div>
+
+  <!-- Chat area: Messages & Input -->
+  <div class="chat-container" *ngIf="selectedUser">
+    <h3>Chat with {{ selectedUser.name}}</h3>
+
+    <div class="messages">
+      <div
+        *ngFor="let message of messages"
+        class="message"
+        [class.outgoing]="message.sender_id === currentUserId"
+        [class.incoming]="message.sender_id !== currentUserId"
+      >
+        <div class="sender">{{ message.sender_name }}</div>
+        <div class="bubble">{{ message.text }}</div>
+      </div>
+    </div>
+
+
+
+    <div class="message-input">
+      <input
+        type="text"
+        [(ngModel)]="newMessage"
+        placeholder="Type a message..."
+        (keyup.enter)="sendMessage()"
+      />
+      <button (click)="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>

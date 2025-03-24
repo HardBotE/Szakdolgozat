@@ -1,54 +1,88 @@
 import messageModel from "../Model/messageModel";
-import { deleteOneById, findAll, findOneById, updateOneById} from "./FactoryController";
+import MessageModel from "../Model/messageModel";
+import {deleteOneById, updateOneById} from "./FactoryController";
 import catchAsync from "../Utils/CatchAsyncError";
 import {NextFunction, Request, Response} from "express";
 import {AppError} from "../Utils/AppError";
+import mongoose from "mongoose";
+import userModel from "../Model/userModel";
+import UserModel from "../Model/userModel";
 
 
-const createMessage= catchAsync(async function(req:Request,res:Response,next:NextFunction){
-    {
-        console.log(req.params);
-        const client_id=req.params.id;
-        if (!client_id) {
-            return next(new AppError('Category ID is required', 400, 'Please provide a valid category ID'));
-        }
+const createMessage =  async function (receiver_id: string, sender_id: string, message: string) {
 
+    const receiver_name=await UserModel.findOne({_id:receiver_id});
+    console.log(receiver_name);
+    if (!message)
+        return;
 
-        const sender_id=req.user.id;
-        if (!sender_id) {
-            return next(new AppError('You need to log in to your account', 400));
-        }
+    let conversation = await MessageModel.findOne({users: {$all: [sender_id, receiver_id]}});
 
-        const input={
-            sender_id,
-            client_id,
-            ...req.body,
-        };
-        console.log(input);
+    if (!conversation) {
 
-        const data= await messageModel.create(input);
+        conversation = await MessageModel.create({
+            users: [sender_id, receiver_id],
+            messages: [{sender: sender_id, message}]
+        });
+    } else {
 
-        if(!data) {
-            return next(new AppError('Error occurred while creating coach',404,'Please make sure that the entered data is correct'));
-        }
-
-
-        console.log(data);
-        res.status(200).json({
-            data,
-            message:'Successfully sent message',
-        })
-
+        conversation = await MessageModel.findOneAndUpdate(
+            {users: {$all: [sender_id, receiver_id]}},
+            {$push: {messages: {sender: sender_id, text:message,sender_name:receiver_name.name}}},
+            {new: true}
+        );
+        await conversation.save();
     }
 
-})
+    return conversation;
+};
 
-const findAllMessages=findAll(messageModel);
+const createMessageSession = catchAsync(async function (req: Request, res: Response, next: NextFunction) {
+    console.log(req.params);
 
-const findOneMessage=findOneById(messageModel);
+    const receiver_id = new mongoose.Types.ObjectId(req.body.id);
+    const sender_id = new mongoose.Types.ObjectId(req.user.id);
+
+    if (!receiver_id) {
+        return next(new AppError('Receiver ID is required', 400, 'Please provide a valid user ID'));
+    }
+
+    if (!sender_id) {
+        return next(new AppError('You need to log in to send messages', 401));
+    }
+
+    let conversation = await MessageModel.findOne({ users: { $all: [sender_id, receiver_id] } });
+
+    if (!conversation) {
+        conversation = await MessageModel.create({ users: [sender_id, receiver_id], messages: [] });
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Message session created successfully",
+        data: conversation,
+    });
+});
+
+export const findAllMessageSessionsWS = async (userId: string) => {
+    try {
+        return await MessageModel.find({users: {$in:[new mongoose.Types.ObjectId(userId)]}}).select('-messages');
+    } catch (error) {
+        console.error("❌ Hiba az üzenetek lekérésekor:", error);
+        return [];
+    }
+};
+
+const findOneMessageSession=(async function (reciever_id,sender_id){
+
+    const userSession = await MessageModel.findOne({ users: { $all: [reciever_id, sender_id] } });
+
+    return userSession||[];
+
+});
 
 const updateMessage=updateOneById(messageModel,['id','_id','sender_id','timestamp']);
 
 const deleteMessage=deleteOneById(messageModel);
 
-export {createMessage,findAllMessages,findOneMessage,updateMessage,deleteMessage};
+export {createMessage,findOneMessageSession,updateMessage,deleteMessage,createMessageSession}

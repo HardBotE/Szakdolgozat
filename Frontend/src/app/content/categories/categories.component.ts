@@ -14,12 +14,13 @@ import {FormsModule} from '@angular/forms';
   styleUrl: './categories.component.css'
 })
 export class CategoriesComponent implements OnInit {
-  categories: { _id: string; name: string; description: string; image?: string }[] = [];
-  loggedInUser: IUser = { _id: '',sub_type:'', name: '', role: '', email: '', picture: '' };
+  categories: { _id: string; name: string; description: string; background_image?: string }[] = [];
+  loggedInUser: IUser = { _id: '', sub_type: '', name: '', role: '', email: '', picture: '' };
   showModal = false;
   isEditing = false;
   formData = { name: '', description: '', image: '' };
   selectedCategoryId: string | null = null;
+  uploadFile: File | null = null; // Fájlfeltöltéshez
 
   constructor(private http: HttpClient) {}
 
@@ -34,7 +35,6 @@ export class CategoriesComponent implements OnInit {
     ).subscribe(res => {
       this.categories = res.data;
     });
-
   }
 
   fetchUser() {
@@ -52,6 +52,7 @@ export class CategoriesComponent implements OnInit {
   showCreateCategoryModal() {
     this.isEditing = false;
     this.formData = { name: '', description: '', image: '' };
+    this.uploadFile = null; // Reset fájl
     this.showModal = true;
   }
 
@@ -59,12 +60,13 @@ export class CategoriesComponent implements OnInit {
     this.isEditing = true;
     this.selectedCategoryId = category._id;
     this.formData = { name: category.name, description: category.description, image: category.image || '' };
+    this.uploadFile = null; // Reset fájl
     this.showModal = true;
   }
 
   deleteCategory(categoryId: string) {
     if (confirm('Are you sure you want to delete this category?')) {
-      this.http.delete(`http://localhost:3000/api/categories/${categoryId}`,{withCredentials:true})
+      this.http.delete(`http://localhost:3000/api/categories/${categoryId}`, { withCredentials: true })
         .subscribe(() => {
           this.categories = this.categories.filter(c => c._id !== categoryId);
         });
@@ -75,19 +77,41 @@ export class CategoriesComponent implements OnInit {
     this.showModal = false;
   }
 
+  handleFileInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.uploadFile = input.files[0];
+    }
+  }
+
   submitCategory() {
     if (this.isEditing) {
-      this.http.patch(`http://localhost:3000/api/categories/${this.selectedCategoryId}`, this.formData,{withCredentials:true})
+      this.http.patch(`http://localhost:3000/api/categories/${this.selectedCategoryId}`, this.formData, { withCredentials: true })
         .subscribe(() => {
-          this.fetchCategories();
+          this.uploadImageIfNeeded();
+        });
+    } else {
+      this.http.post('http://localhost:3000/api/categories', this.formData, { withCredentials: true })
+        .subscribe((res: any) => {
+          this.selectedCategoryId = res.data._id; // Az új kategória ID-ja
+          this.uploadImageIfNeeded();
+        });
+    }
+  }
+
+  uploadImageIfNeeded() {
+    if (this.uploadFile && this.selectedCategoryId) {
+      const formData = new FormData();
+      formData.append('file', this.uploadFile);
+
+      this.http.post(`http://localhost:3000/api/uploads/category_backgrounds/${this.selectedCategoryId}`, formData, { withCredentials: true })
+        .subscribe(() => {
+          this.fetchCategories(); // Frissítés feltöltés után
           this.closeModal();
         });
     } else {
-      this.http.post('http://localhost:3000/api/categories', this.formData,{withCredentials:true})
-        .subscribe(() => {
-          this.fetchCategories();
-          this.closeModal();
-        });
+      this.fetchCategories();
+      this.closeModal();
     }
   }
 }

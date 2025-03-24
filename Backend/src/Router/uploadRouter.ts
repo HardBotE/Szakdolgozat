@@ -15,11 +15,16 @@ router.post('/:file_path/:id?',getUserFromJWT, (req:Request, res:Response, next:
     const { file_path,id } = req.params;
 
     if(file_path==='profile_pictures')
-        req.uploadType=req.user.id;
+        { // @ts-ignore
+            req.uploadType=req.user.id;
+        }
 
     if(file_path==='category_backgrounds' || file_path==='session_files')
-        req.uploadType=id;
+        { // @ts-ignore
+            req.uploadType=id;
+        }
 
+    // @ts-ignore
     if(!req.uploadType)
         return next(new AppError('Unable to upload here',403,'You have to upload file in the correct path.'));
 

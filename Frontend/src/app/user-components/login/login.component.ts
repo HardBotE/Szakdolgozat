@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {Router, RouterLink} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
-
+import { jwtDecode } from "jwt-decode";
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -30,9 +30,17 @@ export class LoginComponent {
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.http.post('http://localhost:3000/api/users/login', {email:this.loginForm.value.email,password:this.loginForm.value.password}, {withCredentials: true})
-        .subscribe(() => {
+        .subscribe((res) => {
+          //@ts-ignore
+          localStorage.setItem("jwt", res.token);
+          //@ts-ignore
+          const token=jwtDecode(res.token);
+          //@ts-ignore
+          localStorage.setItem('userId',token.id);
+
           console.log('Successfully logged in!');
           this.router.navigate(['/']).then(() => {
+
             setTimeout(() => window.location.reload(), 50);
           });
         });

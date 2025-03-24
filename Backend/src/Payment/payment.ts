@@ -2,7 +2,8 @@ import  {NextFunction,Request,Response} from "express";
 import SessionModel from "../Model/sessionModel";
 import {AppError} from "../Utils/AppError";
 import AvailabilityModel from "../Model/availabilityModel";
-
+import dotenv from "dotenv";
+dotenv.config({ path: "./config.env" });
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const payment = async function (req: Request, res: Response, next: NextFunction) {

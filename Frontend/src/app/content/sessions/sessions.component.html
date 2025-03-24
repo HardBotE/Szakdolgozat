@@ -41,6 +41,9 @@
       }">
       {{ session.status | uppercase }}
     </div>
+    <div class="message-coach session-status" (click)="contactCoach(session._id,session.coach_user_id)">
+      Click here to write a message!
+    </div>
 
     <div *ngIf="session.status === 'pending'" class="session-cancel">
       <button class="btn-cancel" (click)="cancelSession(session._id)">Cancel session</button>
