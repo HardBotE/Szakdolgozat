@@ -12,8 +12,9 @@
     <!-- Public Navigation (Always Visible) -->
     <ul class="public-nav">
       <li><a routerLink="/">Find a Coach</a></li>
+      <!--
       <li><a routerLink="/how-it-works">How It Works</a></li>
-      <!-- Ha  a stripe ki meg lesz csinalva backenden jobban akkor add hozz a routeot.
+      Ha  a stripe ki meg lesz csinalva backenden jobban akkor add hozz a routeot.
       <li><a routerLink="/pricing">Pricing</a></li>
       -->
     </ul>
@@ -24,7 +25,7 @@
       <li><a routerLink="/sessions">My Sessions</a></li>
       <li><a routerLink="/profile">Profile</a></li>
       <!--Clients can become coaches-->
-      <li *ngIf="this.loggedInUser!.role!=='admin'"><a routerLink="/coachRegister"> Become a coach </a></li>
+      <li *ngIf="this.loggedInUser!.role==='client'"><a routerLink="/coachRegister"> Become a coach </a></li>
       <li><a (click)="onLogout()" class="logout-btn">Logout</a></li>
     </ul>
 

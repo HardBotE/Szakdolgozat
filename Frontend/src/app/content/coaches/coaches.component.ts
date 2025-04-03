@@ -9,6 +9,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
+  picture:string;
   role: string;
   sub_type: string;
   id: string;

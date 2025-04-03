@@ -1,0 +1,89 @@
+/* answer-notification.component.css */
+.answer-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 350px;
+}
+
+.answer-item {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateX(50px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.answer-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.answer-success {
+  background-color: #7b68ee; /* A weboldalon látható lila szín */
+  color: white;
+  border-left: 4px solid #6a5acd;
+}
+
+.answer-error {
+  background-color: #ff5252;
+  color: white;
+  border-left: 4px solid #d32f2f;
+}
+
+.answer-content {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.answer-icon {
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-icon, .error-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.answer-message {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.answer-close {
+  background: none;
+  border: none;
+  color: white;
+  opacity: 0.7;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  transition: opacity 0.2s;
+}
+
+.answer-close:hover {
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .answer-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+}

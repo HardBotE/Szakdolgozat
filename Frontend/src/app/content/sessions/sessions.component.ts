@@ -10,6 +10,7 @@ interface ISession {
   client_id: string;
   coach_id: string;
   coach_user_id:string;
+  description:string|'No description provided';
   coach_name?:string;
   session_location?:string;
   date:{
@@ -50,6 +51,7 @@ export class SessionsComponent implements OnInit {
       // @ts-ignore
       res.data.forEach((item:ISession) => {
         this.http.get(`http://localhost:3000/api/coaches/${item.coach_id}`).subscribe((res)=>{
+          //@ts-ignore
 
           //@ts-ignore
           item.coach_name=res.data.user_id.name;
@@ -58,6 +60,9 @@ export class SessionsComponent implements OnInit {
           console.log(item);
         })
         this.http.post(`http://localhost:3000/api/coaches/availability/getFiltered`,{day:item.date.day,startTime:item.date.startTime,endTime:item.date.endTime,coach_Id:item.coach_id}).subscribe((res)=>{
+          console.log(res);
+          //@ts-ignore
+          item.description=res.data.description;
           //@ts-ignore
           item.session_location=res.data.meetingDetails;
         })

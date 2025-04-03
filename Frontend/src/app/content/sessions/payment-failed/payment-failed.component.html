@@ -1,1 +1,18 @@
-<p>payment-failed works!</p>
+<div class="payment-failed-container">
+  <div class="payment-failed-card">
+    <div class="payment-failed-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+    </div>
+    <h1>Sikertelen fizetés</h1>
+    <p>{{ errorMessage }}</p>
+    <p *ngIf="errorCode" class="error-code">Hibakód: {{ errorCode }}</p>
+    <div class="payment-failed-actions">
+      <button class="retry-button" (click)="navigateToCheckout()">Újra próbálom</button>
+      <button class="home-button" (click)="navigateToHome()">Vissza a főoldalra</button>
+    </div>
+  </div>
+</div>

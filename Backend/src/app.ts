@@ -42,11 +42,6 @@ app.use((req: express.Request, res: express.Response, next: express.NextFunction
 
 //all conenction
 app.use(router);
-// @ts-ignore
-/*
-app.use('public/:filePath',(req: Request, res: Response, next: NextFunction) => {
-    console.log('Anyatok seggget');
-});*/
 
 //error handler
 app.use(errorHandler);

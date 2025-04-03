@@ -76,5 +76,4 @@ export class MessagingComponent implements OnInit {
     console.log(name);
   }
 
-  protected readonly JSON = JSON;
 }

@@ -20,7 +20,7 @@
 
 
     <div class="session-details">
-      <p><strong>Day:</strong> {{ session.date.day }}</p>
+      <p><strong>{{session.description}}</strong></p>
       <p><strong>Start Time:</strong> {{formatTime(session.date.startTime.toString()) }}</p>
       <p><strong>End Time:</strong> {{ formatTime(session.date.endTime.toString()) }}</p>
       <p>

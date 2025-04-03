@@ -3,13 +3,17 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {Router, RouterLink} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import { jwtDecode } from "jwt-decode";
+import {AnswerNotificationService} from '../../Utils/answer/answer-notification.service';
+import {AnswerNotificationComponent} from '../../Utils/answer/answer-notification.component';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    RouterLink
+    RouterLink,
+    AnswerNotificationComponent,
   ],
   styleUrls: ['./login.component.css']
 })
@@ -19,7 +23,7 @@ export class LoginComponent {
   hidePassword = true;
 
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router,private answer:AnswerNotificationService) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required]],
       password: ['', [Validators.required]]
@@ -38,14 +42,22 @@ export class LoginComponent {
           //@ts-ignore
           localStorage.setItem('userId',token.id);
 
-          console.log('Successfully logged in!');
-          this.router.navigate(['/']).then(() => {
+          this.answer.showSuccess('Successfully logged in!');
+            setTimeout(() => {
+              this.router.navigate(['/']).then(() => {
+                setTimeout(() => window.location.reload(), 500);
+              });
+            }, 1000);
 
-            setTimeout(() => window.location.reload(), 50);
-          });
-        });
-    } else {
-      console.log('Error logging in!');
+          },
+          (error)=>{
+            console.log('baj van')
+            this.answer.showError(error.message);
+          }
+        );
+    }
+    else {
+      this.answer.showError('Unknown error');
     }
   }
 }
