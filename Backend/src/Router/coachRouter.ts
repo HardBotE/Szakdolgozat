@@ -2,7 +2,7 @@ import express from "express";
 import sessionRouter from "./sessionRouter";
 import {
     deleteCoach,
-    findCoach,
+    findCoach, findCoachByCategoryId,
     updateCoach
 } from "../Controller/coachController";
 import {getUserFromJWT, grantPermission, verifyOwnership} from "../Controller/authController";
@@ -20,11 +20,16 @@ const router=express.Router();
 router.route('/availability/getFiltered')
     .post(getOneAvailability);
 
+router.route('/getCoachByUserid')
+    .post(findCoachByCategoryId)
+
 router.route('/availability/:id')
     .patch(getUserFromJWT,grantPermission('admin','coach'),verifyOwnership('user_id'),updateAvailability);
 
+
 router.route("/:id")
     .get(findCoach)
+
     .patch(getUserFromJWT,grantPermission('admin','coach'),verifyOwnership('user_id'),updateCoach)
     .delete(getUserFromJWT,grantPermission('admin','coach'),verifyOwnership('id'),deleteCoach);
 

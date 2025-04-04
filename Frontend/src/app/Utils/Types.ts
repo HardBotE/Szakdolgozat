@@ -6,7 +6,8 @@ interface IUser{
     "role": string,
     "sub_type": string,
     "email": string,
-    "picture"?: string
+    "coachId"?: string,
+    "picture": string | ''
 }
 
 export type {IUser};

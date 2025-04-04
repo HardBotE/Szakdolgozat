@@ -2,146 +2,303 @@
   max-width: 900px;
   margin: 0 auto;
   padding: 20px;
+  font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
 }
 
 h2 {
   color: #3a86ff;
   text-align: center;
-  margin-bottom: 20px;
-  font-size: 24px;
+  margin-bottom: 25px;
+  font-size: 28px;
   font-weight: 700;
+  position: relative;
+}
+
+h2:after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 3px;
+  background: #3a86ff;
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+.session-count {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #555;
+  font-size: 16px;
 }
 
 .session-card {
   background: white;
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  position: relative;
+  overflow: hidden;
 }
-.success_session-card{
+
+.success_session-card {
   border-left: 5px solid #19aa1c;
-
-}
-.canceled_session-card{
-  border-left: 5px solid darkred;
-
 }
 
-.pending_session-card{
-  border-left: 5px solid #ae7b0d;
+.canceled_session-card {
+  border-left: 5px solid #d32f2f;
+}
 
+.pending_session-card {
+  border-left: 5px solid #f9a825;
 }
 
 .session-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* Coach neve */
+/* Coach name */
 .coach-name {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: bold;
   color: #3a86ff;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
 }
 
-/* Session adatok */
+/* Session details */
 .session-details {
-  margin: 10px 0;
-  font-size: 15px;
+  margin: 15px 0;
+  font-size: 16px;
   color: #444;
-  line-height: 1.6;
+  line-height: 1.8;
 }
 
-/* Tranzakciós állapot */
+.session-details p {
+  margin-bottom: 10px;
+}
+
+.location-link {
+  color: #3a86ff;
+  text-decoration: none;
+  transition: color 0.2s;
+  font-weight: 500;
+}
+
+.location-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Transaction status */
 .session-status {
   font-weight: bold;
-  padding: 6px 12px;
-  border-radius: 5px;
+  padding: 8px 15px;
+  border-radius: 30px;
   display: inline-block;
   font-size: 14px;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
   text-align: center;
-  width: fit-content;
-  margin: 10px auto;
+  min-width: 100px;
+  margin: 15px 0;
 }
 
-/* 🔹 Státusz színek */
+/* Status colors */
 .confirmed {
-  background: linear-gradient(to right, #28a745, #218838);
+  background: linear-gradient(135deg, #28a745, #1e9e3e);
   color: white;
-  border: 1px solid #1e7e34;
+  border: none;
 }
 
 .pending {
-  background: linear-gradient(to right, #ffc107, #ffb300);
+  background: linear-gradient(135deg, #ffc107, #f9a825);
   color: white;
-  border: 1px solid #d39e00;
+  border: none;
 }
 
 .canceled {
-  background: linear-gradient(to right, #dc3545, #c82333);
+  background: linear-gradient(135deg, #dc3545, #c82333);
   color: white;
-  border: 1px solid #bd2130;
+  border: none;
 }
 
-/* Fizetés gomb */
-.session-pay {
-  text-align: center;
-  margin-top: 10px;
+/* Edit form styles */
+.edit-time-form {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 15px 0;
+  border: 1px solid #e0e0e0;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.edit-time-form h4 {
+  color: #3a86ff;
+  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.form-control:focus {
+  border-color: #3a86ff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.2);
+}
+
+.edit-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #3a86ff, #2563eb);
+  flex: 1;
+  color: white;
+}
+
+.btn-save:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.btn-cancel-edit {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  flex: 1;
+  color: white;
+}
+
+.btn-cancel-edit:hover {
+  background: linear-gradient(135deg, #4b5563, #374151);
+}
+
+/* Session actions */
+.session-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+/* Button styles */
+.btn {
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px 18px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn i {
+  margin-right: 8px;
 }
 
 .btn-pay {
-  background: linear-gradient(to right, #007bff, #0056b3);
+  background: linear-gradient(135deg, #007bff, #0056b3);
   color: white;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 8px 15px;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  text-transform: uppercase;
 }
-.btn-cancel {
-  background: linear-gradient(to right, #ff003b, #9a0930);
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 8px 15px;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  text-transform: uppercase;
-}
-.message-coach{
-  background: linear-gradient(to right, #0033ff, #711818);
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
-  margin-left: 20px;
-  padding: 8px 15px;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  text-transform: uppercase;
-}
+
 .btn-pay:hover {
-  background: linear-gradient(to right, #0056b3, #004494);
+  background: linear-gradient(135deg, #0062cc, #004494);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+}
+
+.btn-cancel {
+  background: linear-gradient(135deg, #ff003b, #c9002e);
+  color: white;
+}
+
+.btn-cancel:hover {
+  background: linear-gradient(135deg, #d60033, #9a0025);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 0, 59, 0.4);
+}
+
+.message-coach {
+  background: linear-gradient(135deg, #3a86ff, #2563eb);
+  color: white;
+}
+
+.message-coach:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(58, 134, 255, 0.4);
+}
+
+.btn-edit {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  color: white;
+}
+
+.btn-edit:hover {
+  background: linear-gradient(135deg, #4b5563, #374151);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(107, 114, 128, 0.4);
 }
 
 .no-sessions {
   text-align: center;
   font-size: 16px;
   color: #777;
-  padding: 20px;
-  background: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  background: #f9fafb;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  margin-top: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .session-card {
+    padding: 20px;
+  }
+
+  .session-actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
 }

@@ -1,0 +1,46 @@
+<h2>Request a New Category</h2>
+
+<form [formGroup]="categoryForm" (ngSubmit)="submitRequest()" *ngIf="loggedInUser?.role === 'coach'">
+  <div class="form-group">
+    <label for="category_name">Category Name</label>
+    <input
+      id="category_name"
+      type="text"
+      formControlName="category_name"
+      required
+      placeholder="Enter category name"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="category_description">Category Description</label>
+    <input
+      id="category_description"
+      type="text"
+      formControlName="category_description"
+      required
+      placeholder="Describe the category"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="further_details">Further Details (optional)</label>
+    <textarea
+      id="further_details"
+      formControlName="further_details"
+      placeholder="Additional information (optional)"
+    ></textarea>
+  </div>
+
+  <button type="submit" [disabled]="categoryForm.invalid">Submit Request</button>
+</form>
+
+<div class="admin-requests" *ngIf="loggedInUser?.role === 'admin'">
+  <h3>Incoming Category Requests</h3>
+  <ul>
+    <li *ngFor="let req of requests">
+      <strong>{{ req.category_name }}</strong>: {{ req.category_description }}
+      <em>{{ req.further_details }}</em>
+    </li>
+  </ul>
+</div>

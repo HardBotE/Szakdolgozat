@@ -4,6 +4,8 @@ import {Router, RouterLink} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {NgForOf} from '@angular/common';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {AnswerNotificationService} from '../../Utils/answer/answer-notification.service';
+import {AnswerNotificationComponent} from '../../Utils/answer/answer-notification.component';
 
 @Component({
   selector: 'app-coach-register',
@@ -11,14 +13,14 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
     NgForOf,
     FormsModule,
     ReactiveFormsModule,
-    RouterLink
+    AnswerNotificationComponent
   ],
   templateUrl: './coach-register.component.html',
   standalone: true,
   styleUrl: './coach-register.component.css'
 })
 export class CoachRegisterComponent implements OnInit {
-  constructor(private router: Router,private http: HttpClient,private fb:FormBuilder)  {
+  constructor(private router: Router,private http: HttpClient,private fb:FormBuilder,private answer:AnswerNotificationService)  {
   }
   categories: { _id: string; name: string; description: string; image?: string }[] = [];
   loggedInUser: IUser = { _id: '',sub_type:'', name: '', role: '', email: '', picture: '' };
@@ -43,11 +45,23 @@ export class CoachRegisterComponent implements OnInit {
     });
 
   }
-  registerCoach(){
-    this.http.post(`http://localhost:3000/api/categories/${this.registerForm.value.category}/coaches`,this.registerForm.value,{withCredentials:true}).subscribe((res)=>{
-      console.log(res);
-    })
+  registerCoach() {
+    this.http.post(
+      `http://localhost:3000/api/categories/${this.registerForm.value.category}/coaches`,
+      this.registerForm.value,
+      { withCredentials: true }
+    ).subscribe({
+      next: (res) => {
+        this.answer.showSuccess('Successfully registered as a coach');
+        setTimeout(() => this.router.navigate(['/']), 1000);
+      },
+      error: (err) => {
+        this.answer.showError('Failed to register as a coach');
+        console.error(err);
+      }
+    });
   }
+
   fetchUser() {
     this.http.get<{ user: IUser }>('http://localhost:3000/api/users/me', { withCredentials: true })
       .subscribe({

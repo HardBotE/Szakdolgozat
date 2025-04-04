@@ -1,8 +1,6 @@
-import dotenv from "dotenv";
-import express, {NextFunction} from 'express';
+import express from 'express';
 import {errorHandler} from "./Utils/AppError";
 import router from "./Router/routing";
-import multer from "multer";
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import path from "path";
@@ -22,12 +20,6 @@ app.use((req, res, next)=>{
     console.log(req.body);
     next();
 });
-
-/*
-app.use((req, res, next) => {
-    console.log("🔹 Cookies received:", req.cookies);
-    next();
-});*/
 
 app.use('/public', express.static(path.join(__dirname, '../public')));
 

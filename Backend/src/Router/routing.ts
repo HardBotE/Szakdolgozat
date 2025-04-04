@@ -5,14 +5,14 @@ import userRouter from "./userRouter";
 import coachRouter from "./coachRouter";
 import reservationRouter from "./reservationRouter";
 import uploadRouter from "./uploadRouter";
-
+import requestCategoryRouter from './categoryRequestRouter';
 const router=express.Router();
 
 router.use('/api/categories',categoryRouter);
+router.use('/api/requestCategory',requestCategoryRouter);
 router.use('/api/coaches',coachRouter);
 router.use('/api/sessions',sessionRouter);
 router.use('/api/users',userRouter);
 router.use('/api/reservations',reservationRouter);
-/**/
 router.use('/api/uploads/',uploadRouter);
 export default router;

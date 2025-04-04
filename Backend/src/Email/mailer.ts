@@ -1,11 +1,10 @@
+
 import nodemailer from 'nodemailer';
-import dotenv from "dotenv";
 import {Email} from "../Types/user.type";
-dotenv.config();
 
 const transporter=nodemailer.createTransport({
     host:process.env.MAILTRAP_HOST,
-    port:Number(process.env.MAILTRAP_PORT),
+    port:Number(process.env.MAILTRAP_PORT)||587,
     secure:false,
     auth:{
         user:process.env.MAILTRAP_USERNAME,

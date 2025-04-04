@@ -4,10 +4,10 @@
   </ng-container>
 
   <ng-template #teachings>
-     <h2>My Sessions</h2>
+    <h2>My Sessions</h2>
   </ng-template>
 
-  <p>You have <strong>{{ sessions.length }}</strong> session{{ sessions.length !== 1 ? 's' : '' }}.</p>
+  <p class="session-count">You have <strong>{{ sessions.length }}</strong> session{{ sessions.length !== 1 ? 's' : '' }}.</p>
 
   <div *ngFor="let session of sessions" class="session-card" [ngClass]="{
         'success_session-card': session.status === 'paid',
@@ -18,14 +18,13 @@
       <h3 class="coach-name">Session with {{session.coach_name}}</h3>
     </ng-container>
 
-
     <div class="session-details">
       <p><strong>{{session.description}}</strong></p>
       <p><strong>Start Time:</strong> {{formatTime(session.date.startTime.toString()) }}</p>
       <p><strong>End Time:</strong> {{ formatTime(session.date.endTime.toString()) }}</p>
       <p>
         <ng-container *ngIf="session.session_location?.startsWith('http'); else plainText">
-          <a [href]="session.session_location" target="_blank">{{ session.session_location }}</a>
+          <a [href]="session.session_location" target="_blank" class="location-link">{{ session.session_location }}</a>
         </ng-container>
 
         <ng-template #plainText>
@@ -41,16 +40,54 @@
       }">
       {{ session.status | uppercase }}
     </div>
-    <div class="message-coach session-status" (click)="contactCoach(session._id,session.coach_user_id)">
-      Click here to write a message!
+
+    <!-- Edit Time Form (hidden by default) -->
+    <div *ngIf="editingSessionId === session._id" class="edit-time-form">
+      <h4>Edit Session Time</h4>
+      <div class="form-group">
+        <label for="startTime">Start Time:</label>
+        <input
+          type="datetime-local"
+          id="startTime"
+          [(ngModel)]="editSessionData.startTime"
+          class="form-control"
+        >
+      </div>
+      <div class="form-group">
+        <label for="endTime">End Time:</label>
+        <input
+          type="datetime-local"
+          id="endTime"
+          [(ngModel)]="editSessionData.endTime"
+          class="form-control"
+        >
+      </div>
+      <div class="edit-actions">
+        <button class="btn btn-save" (click)="saveSessionEdit(session._id)">
+          <i class="fas fa-save"></i> Save
+        </button>
+        <button class="btn btn-cancel-edit" (click)="cancelEdit()">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+      </div>
     </div>
 
-    <div *ngIf="session.status === 'pending'" class="session-cancel">
-      <button class="btn-cancel" (click)="cancelSession(session._id)">Cancel session</button>
-    </div>
+    <div class="session-actions" *ngIf="editingSessionId !== session._id">
+      <button class="btn btn-edit" *ngIf="session.status !== 'canceled' && loggedInUser?.role==='coach' " (click)="initiateEdit(session._id, session.date.startTime, session.date.endTime)">
+        <i class="fas fa-edit"></i> Edit
+      </button>
 
-    <div *ngIf="session.status === 'pending'" class="session-pay">
-      <button class="btn-pay" (click)="startPay(session._id)">Pay for the session</button>
+      <button class="btn message-coach" (click)="contactCoach(session._id,session.coach_user_id)">
+        <i class="fas fa-comment"></i> Message
+      </button>
+
+      <button class="btn btn-cancel" *ngIf="session.status === 'pending' && loggedInUser!.role!=='coach'" (click)="cancelSession(session._id)">
+        <i class="fas fa-times"></i> Cancel
+      </button>
+
+      <button class="btn btn-pay" *ngIf="session.status === 'pending' && loggedInUser!.role!=='coach'" (click)="startPay(session._id)">
+        <i class="fas fa-credit-card"></i> Pay
+      </button>
     </div>
   </div>
 

@@ -119,7 +119,7 @@
   transform: scale(1.05);
 }
 
-/* Create new category card (admin only) */
+/* Create new requestCategory card (admin only) */
 .create-category-card {
   width: 320px;
   height: 350px;

@@ -11,6 +11,7 @@ import {CoachRegisterComponent} from './user-components/coach-register/coach-reg
 import {ProfileComponent} from './content/profile/profile.component';
 import {ForgotPasswordComponent} from './user-components/forgot-password/forgot-password.component';
 import {MessagingComponent} from './content/messaging/messaging.component';
+import {RequestCategoryComponent} from './content/requestCategory/requestCategory.component';
 
 export const routes: Routes = [
   {path:'',component:CategoriesComponent},
@@ -20,6 +21,7 @@ export const routes: Routes = [
   {path:'payment_success',component:PaymentSuccessComponent},
   {path:'coachRegister',component:CoachRegisterComponent},
   {path:'profile',component:ProfileComponent},
+  {path:'submitCategory',component:RequestCategoryComponent},
   {path:'forgot_password',component:ForgotPasswordComponent},
   {path:'payment_failed',component:PaymentFailedComponent},
   {path:'coach/:id',component:ReserveComponent},

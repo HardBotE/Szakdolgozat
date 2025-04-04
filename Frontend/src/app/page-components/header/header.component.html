@@ -22,10 +22,26 @@
     <!-- Authenticated User Navigation -->
     <ul class="user-nav" *ngIf="isLoggedIn">
       <li><a routerLink="/messages">Messaging</a></li>
-      <li><a routerLink="/sessions">My Sessions</a></li>
+      <li *ngIf="loggedInUser">
+        <a [routerLink]="['/sessions']">
+          {{ loggedInUser.role === 'coach' ? 'Your Scheduled Classes' : 'Your Booked Sessions' }}
+
+        </a>
+      </li>
+
       <li><a routerLink="/profile">Profile</a></li>
       <!--Clients can become coaches-->
       <li *ngIf="this.loggedInUser!.role==='client'"><a routerLink="/coachRegister"> Become a coach </a></li>
+      <li *ngIf="loggedInUser?.role === 'coach' && loggedInUser?.coachId">
+        <a [routerLink]="['/coach', loggedInUser!.coachId]">My Availability</a>
+      </li>
+      <li *ngIf="loggedInUser?.role === 'admin'">
+        <a [routerLink]="['/submitCategory']">Submitted Categories</a>
+      </li>
+      <li *ngIf="loggedInUser?.role === 'coach' && loggedInUser?.coachId">
+        <a [routerLink]="['/submitCategory']">Submit Category</a>
+      </li>
+
       <li><a (click)="onLogout()" class="logout-btn">Logout</a></li>
     </ul>
 
@@ -39,6 +55,7 @@
 
   <!-- User Greeting -->
   <div class="user-greeting" *ngIf="isLoggedIn">
-    Welcome back, {{ this.loggedInUser?.name }}! 👋
+    Welcome, {{ this.loggedInUser?.name }}! 👋
   </div>
 </header>
+<app-answer-notification></app-answer-notification>

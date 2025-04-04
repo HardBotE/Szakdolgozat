@@ -27,7 +27,7 @@ const createCoach = catchAsync(async function (req: Request, res: Response, next
     {
         const category_id = req.params.id;
         if (!category_id) {
-            return next(new AppError('Category ID is required', 400, 'Please provide a valid category ID'));
+            return next(new AppError('Category ID is required', 400, 'Please provide a valid requestCategory ID'));
         }
 
 
@@ -64,6 +64,17 @@ const updateCoach = updateOneById(coachModel, ['id', '_id', 'user_id']);
 
 const deleteCoach = deleteOneById(coachModel);
 
+const findCoachByCategoryId=catchAsync(async (req: Request, res: Response) => {
+    console.log('In requestCategory');
+    const user_id=req.body.user_id;
+    console.log(user_id);
 
+    const coach=await CoachModel.find({user_id:user_id});
+    console.log(coach);
+    res.status(200).json({
+        message:'Successfully retrieved coach.',
+        data:coach
+    });
+})
 
-export {findAllCoaches,findCoach,createCoach,updateCoach,deleteCoach};
+export {findAllCoaches,findCoach,createCoach,updateCoach,deleteCoach,findCoachByCategoryId};

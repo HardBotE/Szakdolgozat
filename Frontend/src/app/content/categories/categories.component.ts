@@ -5,6 +5,8 @@ import { RouterLink } from '@angular/router';
 import { IUser } from '../../Utils/Types';
 import { getPermittedFields } from '../../Utils/permitCrudFields';
 import {FormsModule} from '@angular/forms';
+import {AnswerNotificationComponent} from '../../Utils/answer/answer-notification.component';
+import {AnswerNotificationService} from '../../Utils/answer/answer-notification.service';
 
 @Component({
   selector: 'app-categories',
@@ -22,7 +24,7 @@ export class CategoriesComponent implements OnInit {
   selectedCategoryId: string | null = null;
   uploadFile: File | null = null; // Fájlfeltöltéshez
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private answer:AnswerNotificationService ) {}
 
   ngOnInit() {
     this.fetchUser();
@@ -65,10 +67,11 @@ export class CategoriesComponent implements OnInit {
   }
 
   deleteCategory(categoryId: string) {
-    if (confirm('Are you sure you want to delete this category?')) {
+    if (confirm('Are you sure you want to delete this requestCategory?')) {
       this.http.delete(`http://localhost:3000/api/categories/${categoryId}`, { withCredentials: true })
         .subscribe(() => {
           this.categories = this.categories.filter(c => c._id !== categoryId);
+          this.answer.showSuccess('Successfully deleted requestCategory');
         });
     }
   }
@@ -89,12 +92,14 @@ export class CategoriesComponent implements OnInit {
       this.http.patch(`http://localhost:3000/api/categories/${this.selectedCategoryId}`, this.formData, { withCredentials: true })
         .subscribe(() => {
           this.uploadImageIfNeeded();
+          this.answer.showSuccess('Successfully updated requestCategory');
         });
     } else {
       this.http.post('http://localhost:3000/api/categories', this.formData, { withCredentials: true })
         .subscribe((res: any) => {
           this.selectedCategoryId = res.data._id; // Az új kategória ID-ja
           this.uploadImageIfNeeded();
+          this.answer.showSuccess('Successfully created requestCategory');
         });
     }
   }

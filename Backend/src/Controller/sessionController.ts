@@ -4,6 +4,7 @@ import catchAsync from "../Utils/CatchAsyncError";
 import {NextFunction, Request, RequestHandler, Response} from "express";
 import {AppError} from "../Utils/AppError";
 import coachModel from "../Model/coachModel";
+import availabilityModel from "../Model/availabilityModel";
 
 const createSession= catchAsync(async function(req:Request,res:Response,next:NextFunction){
     {
@@ -36,7 +37,43 @@ const createSession= catchAsync(async function(req:Request,res:Response,next:Nex
 })
 
 //lehet reworkolom
-const updateSession=updateOneById(sessionModel,['id','_id','user_id','coach_id']);
+const updateSession = catchAsync(async function(req: Request, res: Response, next: NextFunction) {
+    const session_id = req.params.id;
+
+    const sessionData=await sessionModel.findById(session_id);
+
+    const availability = await availabilityModel.findOneAndUpdate(
+        {coach_Id:sessionData.coach_id,
+            startTime:sessionData.date.startTime,
+            endTime:sessionData.date.endTime,
+        },
+        {startTime:req.body.startTime,
+            endTime:req.body.endTime,
+        },
+        {new: true}
+    );
+
+    const session = await sessionModel.findByIdAndUpdate(
+        session_id,
+        {
+            'date.startTime': req.body.startTime,
+            'date.endTime': req.body.endTime
+        },
+        { new: true } // Ez a kulcs opció: a frissített dokumentumot adja vissza
+    );
+
+    console.log(session);
+
+    if (!session) {
+        return next(new Error('Session not found'));
+    }
+
+    res.status(200).json({
+        status: "success",
+        data: session,
+        avail:availability,
+    });
+});
 
 const findOneSession=findOneById(sessionModel);
 

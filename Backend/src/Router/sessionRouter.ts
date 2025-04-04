@@ -19,7 +19,7 @@ router.route('/')
 
 router.route('/:id')
     .get(getUserFromJWT,verifyOwnership('user_id'),findOneSession)
-    .patch(getUserFromJWT,grantPermission('coach'),verifyOwnership("coach_id"),updateSession)
+    .patch(getUserFromJWT,grantPermission('coach','admin'),updateSession)
     .delete(getUserFromJWT,grantPermission('admin'),verifyOwnership("user_id"),deleteSession);
 
 
